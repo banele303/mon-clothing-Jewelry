@@ -17,7 +17,7 @@ export default function SecondSection() {
               </div>
               <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">MON Clothing & Jewellery</h2>
               <p className="max-w-[600px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
-                Born from boundless creativity and a passion for artisanal craft, MON represents more than just a brand—it's
+                Born from boundless creativity and a passion for artisanal craft, MON represents more than just a brand—it&apos;s
                 a celebration of elegance and legacy.
               </p>
             </div>
@@ -38,7 +38,7 @@ export default function SecondSection() {
               <div className="flex flex-col gap-2">
                 <h3 className="text-xl font-bold">Our Heritage</h3>
                 <p className="text-gray-500 dark:text-gray-400">
-                  The name MON, meaning "Mother of Nations," embodies our spirit of grace and profound purpose. We are
+                  The name MON, meaning &quot;Mother of Nations,&quot; embodies our spirit of grace and profound purpose. We are
                   dedicated to creating pieces that tell stories and leave lasting legacies.
                 </p>
               </div>
