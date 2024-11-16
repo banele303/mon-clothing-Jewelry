@@ -1,3 +1,8 @@
+
+
+
+
+
 import { wixClientServer } from "@/lib/wixClientServer";
 import Image from "next/image";
 import Link from "next/link";
@@ -16,7 +21,7 @@ const CategoryList = async () => {
             className="flex-shrink-0 w-full sm:w-1/2 lg:w-1/4 xl:w-1/6"
             key={item._id}
           >
-           <div className="relative w-full  h-[300px] bg-slate-100 rounded-lg overflow-hidden">
+           <div className="relative w-full  h-[250px] bg-slate-100 rounded-lg overflow-hidden">
               <Image
                 src={item.media?.mainMedia?.image?.url || "/cat.png"}
                 alt={item.name || "Category image"}
@@ -26,7 +31,7 @@ const CategoryList = async () => {
                 sizes="300px"
               />
             </div>
-            <h1 className="mt-8 font-light text-xl tracking-wide">
+            <h1 className="mt-8 font-light text-xl font-bold tracking-wide">
               {item.name}
             </h1>
           </Link>
