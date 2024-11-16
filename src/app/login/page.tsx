@@ -4,7 +4,7 @@ import { useWixClient } from "@/hooks/useWixClient";
 import { LoginState } from "@wix/sdk";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 enum MODE {
   LOGIN = "LOGIN",
@@ -13,18 +13,11 @@ enum MODE {
   EMAIL_VERIFICATION = "EMAIL_VERIFICATION",
 }
 
-const LoginPage = () => {
+export default function LoginPage() {
   const wixClient = useWixClient();
   const router = useRouter();
 
-  const isLoggedIn = wixClient.auth.loggedIn();
-
-  if (isLoggedIn) {
-    router.push("/");
-  }
-
-  const [mode, setMode] = useState(MODE.LOGIN);
-
+  const [mode, setMode] = useState<MODE>(MODE.LOGIN);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -33,38 +26,47 @@ const LoginPage = () => {
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
 
-  const formTitle =
-    mode === MODE.LOGIN
-      ? "Log in"
-      : mode === MODE.REGISTER
-      ? "Register"
-      : mode === MODE.RESET_PASSWORD
-      ? "Reset Your Password"
-      : "Verify Your Email";
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      try {
+        const isLoggedIn = await wixClient.auth.loggedIn();
+        if (isLoggedIn) {
+          router.push("/");
+        }
+      } catch (error) {
+        console.error("Error checking login status:", error);
+      }
+    };
 
-  const buttonTitle =
-    mode === MODE.LOGIN
-      ? "Login"
-      : mode === MODE.REGISTER
-      ? "Register"
-      : mode === MODE.RESET_PASSWORD
-      ? "Reset"
-      : "Verify";
+    checkLoginStatus();
+  }, [wixClient.auth, router]);
+
+  const formTitle = {
+    [MODE.LOGIN]: "Log in",
+    [MODE.REGISTER]: "Register",
+    [MODE.RESET_PASSWORD]: "Reset Your Password",
+    [MODE.EMAIL_VERIFICATION]: "Verify Your Email",
+  }[mode];
+
+  const buttonTitle = {
+    [MODE.LOGIN]: "Login",
+    [MODE.REGISTER]: "Register",
+    [MODE.RESET_PASSWORD]: "Reset",
+    [MODE.EMAIL_VERIFICATION]: "Verify",
+  }[mode];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
+    setMessage("");
 
     try {
       let response;
 
       switch (mode) {
         case MODE.LOGIN:
-          response = await wixClient.auth.login({
-            email,
-            password,
-          });
+          response = await wixClient.auth.login({ email, password });
           break;
         case MODE.REGISTER:
           response = await wixClient.auth.register({
@@ -74,56 +76,52 @@ const LoginPage = () => {
           });
           break;
         case MODE.RESET_PASSWORD:
-          response = await wixClient.auth.sendPasswordResetEmail(
-            email,
-            window.location.href
-          );
+          await wixClient.auth.sendPasswordResetEmail(email, window.location.href);
           setMessage("Password reset email sent. Please check your e-mail.");
-          break;
+          setIsLoading(false);
+          return;
         case MODE.EMAIL_VERIFICATION:
           response = await wixClient.auth.processVerification({
             verificationCode: emailCode,
           });
           break;
-        default:
-          break;
       }
 
-      switch (response?.loginState) {
-        case LoginState.SUCCESS:
-          setMessage("Successful! You are being redirected.");
-          const tokens = await wixClient.auth.getMemberTokensForDirectLogin(
-            response.data.sessionToken!
-          );
+      if (response?.loginState === LoginState.SUCCESS) {
+        setMessage("Successful! You are being redirected.");
+        const tokens = await wixClient.auth.getMemberTokensForDirectLogin(
+          response.data.sessionToken!
+        );
 
-          Cookies.set("refreshToken", JSON.stringify(tokens.refreshToken), {
-            expires: 2,
-          });
-          wixClient.auth.setTokens(tokens);
-          router.push("/");
-          break;
-        case LoginState.FAILURE:
-          if (
-            response.errorCode === "invalidEmail" ||
-            response.errorCode === "invalidPassword"
-          ) {
-            setError("Invalid email or password!");
-          } else if (response.errorCode === "emailAlreadyExists") {
-            setError("Email already exists!");
-          } else if (response.errorCode === "resetPassword") {
-            setError("You need to reset your password!");
-          } else {
-            setError("Something went wrong!");
-          }
-        case LoginState.EMAIL_VERIFICATION_REQUIRED:
-          setMode(MODE.EMAIL_VERIFICATION);
-        case LoginState.OWNER_APPROVAL_REQUIRED:
-          setMessage("Your account is pending approval");
-        default:
-          break;
+        // Update the cookie setting to use SameSite=Lax
+        Cookies.set("refreshToken", JSON.stringify(tokens.refreshToken), {
+          expires: 2,
+          sameSite: 'Lax',
+          secure: window.location.protocol === 'https:',
+        });
+        wixClient.auth.setTokens(tokens);
+        setTimeout(() => router.push("/"), 2000);
+      } else if (response?.loginState === LoginState.FAILURE) {
+        if (
+          response.errorCode === "invalidEmail" ||
+          response.errorCode === "invalidPassword"
+        ) {
+          setError("Invalid email or password!");
+        } else if (response.errorCode === "emailAlreadyExists") {
+          setError("Email already exists!");
+        } else if (response.errorCode === "resetPassword") {
+          setError("You need to reset your password!");
+        } else {
+          setError("Something went wrong!");
+        }
+      } else if (response?.loginState === LoginState.EMAIL_VERIFICATION_REQUIRED) {
+        setMode(MODE.EMAIL_VERIFICATION);
+        setMessage("Email verification required. Please check your email for the verification code.");
+      } else if (response?.loginState === LoginState.OWNER_APPROVAL_REQUIRED) {
+        setMessage("Your account is pending approval");
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
       setError("Something went wrong!");
     } finally {
       setIsLoading(false);
@@ -131,99 +129,378 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="h-[calc(100vh-80px)] px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64 flex items-center justify-center">
-      <form className="flex flex-col gap-8" onSubmit={handleSubmit}>
-        <h1 className="text-2xl font-semibold">{formTitle}</h1>
-        {mode === MODE.REGISTER ? (
-          <div className="flex flex-col gap-2">
-            <label className="text-sm text-gray-700">Username</label>
-            <input
-              type="text"
-              name="username"
-              placeholder="john"
-              className="ring-2 ring-gray-300 rounded-md p-4"
-              onChange={(e) => setUsername(e.target.value)}
-            />
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8">
+        <div>
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            {formTitle}
+          </h2>
+        </div>
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          <input type="hidden" name="remember" value="true" />
+          <div className="rounded-md shadow-sm -space-y-px">
+            {mode === MODE.REGISTER && (
+              <div>
+                <label htmlFor="username" className="sr-only">
+                  Username
+                </label>
+                <input
+                  id="username"
+                  name="username"
+                  type="text"
+                  required
+                  autoComplete="username"
+                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                  placeholder="Username"
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+              </div>
+            )}
+            {mode !== MODE.EMAIL_VERIFICATION && (
+              <div>
+                <label htmlFor="email-address" className="sr-only">
+                  Email address
+                </label>
+                <input
+                  id="email-address"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                  placeholder="Email address"
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+            )}
+            {mode === MODE.EMAIL_VERIFICATION ? (
+              <div>
+                <label htmlFor="verification-code" className="sr-only">
+                  Verification Code
+                </label>
+                <input
+                  id="verification-code"
+                  name="verification-code"
+                  type="text"
+                  autoComplete="one-time-code"
+                  required
+                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                  placeholder="Verification Code"
+                  onChange={(e) => setEmailCode(e.target.value)}
+                />
+              </div>
+            ) : (mode === MODE.LOGIN || mode === MODE.REGISTER) && (
+              <div>
+                <label htmlFor="password" className="sr-only">
+                  Password
+                </label>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  autoComplete="current-password"
+                  required
+                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                  placeholder="Password"
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+            )}
           </div>
-        ) : null}
-        {mode !== MODE.EMAIL_VERIFICATION ? (
-          <div className="flex flex-col gap-2">
-            <label className="text-sm text-gray-700">E-mail</label>
-            <input
-              type="email"
-              name="email"
-              placeholder="john@gmail.com"
-              className="ring-2 ring-gray-300 rounded-md p-4"
-              onChange={(e) => setEmail(e.target.value)}
-            />
+
+          <div className="flex items-center justify-between">
+            {mode === MODE.LOGIN && (
+              <div className="text-sm">
+                <a
+                  href="#"
+                  className="font-medium text-indigo-600 hover:text-indigo-500"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setMode(MODE.RESET_PASSWORD);
+                  }}
+                >
+                  Forgot your password?
+                </a>
+              </div>
+            )}
           </div>
-        ) : (
-          <div className="flex flex-col gap-2">
-            <label className="text-sm text-gray-700">Verification Code</label>
-            <input
-              type="text"
-              name="emailCode"
-              placeholder="Code"
-              className="ring-2 ring-gray-300 rounded-md p-4"
-              onChange={(e) => setEmailCode(e.target.value)}
-            />
+
+          <div>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-400"
+            >
+              {isLoading ? (
+                <span className="flex items-center">
+                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Loading...
+                </span>
+              ) : (
+                buttonTitle
+              )}
+            </button>
           </div>
-        )}
-        {mode === MODE.LOGIN || mode === MODE.REGISTER ? (
-          <div className="flex flex-col gap-2">
-            <label className="text-sm text-gray-700">Password</label>
-            <input
-              type="password"
-              name="password"
-              placeholder="Enter your password"
-              className="ring-2 ring-gray-300 rounded-md p-4"
-              onChange={(e) => setPassword(e.target.value)}
-            />
+        </form>
+
+        {error && <div className="mt-2 text-center text-sm text-red-600">{error}</div>}
+        {message && <div className="mt-2 text-center text-sm text-green-600">{message}</div>}
+
+        <div className="mt-6">
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-gray-50 text-gray-500">
+                {mode === MODE.LOGIN ? "New to our platform?" : "Already have an account?"}
+              </span>
+            </div>
           </div>
-        ) : null}
-        {mode === MODE.LOGIN && (
-          <div
-            className="text-sm underline cursor-pointer"
-            onClick={() => setMode(MODE.RESET_PASSWORD)}
-          >
-            Forgot Password?
+
+          <div className="mt-6">
+            <button
+              onClick={() => setMode(mode === MODE.LOGIN ? MODE.REGISTER : MODE.LOGIN)}
+              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-indigo-600 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+              {mode === MODE.LOGIN ? "Sign up" : "Sign in"}
+            </button>
           </div>
-        )}
-        <button
-          className="bg-lama text-white p-2 rounded-md disabled:bg-pink-200 disabled:cursor-not-allowed"
-          disabled={isLoading}
-        >
-          {isLoading ? "Loading..." : buttonTitle}
-        </button>
-        {error && <div className="text-red-600">{error}</div>}
-        {mode === MODE.LOGIN && (
-          <div
-            className="text-sm underline cursor-pointer"
-            onClick={() => setMode(MODE.REGISTER)}
-          >
-            {"Don't"} have an account?
-          </div>
-        )}
-        {mode === MODE.REGISTER && (
-          <div
-            className="text-sm underline cursor-pointer"
-            onClick={() => setMode(MODE.LOGIN)}
-          >
-            Have and account?
-          </div>
-        )}
-        {mode === MODE.RESET_PASSWORD && (
-          <div
-            className="text-sm underline cursor-pointer"
-            onClick={() => setMode(MODE.LOGIN)}
-          >
-            Go back to Login
-          </div>
-        )}
-        {message && <div className="text-green-600 text-sm">{message}</div>}
-      </form>
+        </div>
+      </div>
     </div>
   );
-};
+}
 
-export default LoginPage;
+// "use client";
+
+// import { useWixClient } from "@/hooks/useWixClient";
+// import { LoginState } from "@wix/sdk";
+// import { useRouter } from "next/navigation";
+// import Cookies from "js-cookie";
+// import { useState } from "react";
+
+// enum MODE {
+//   LOGIN = "LOGIN",
+//   REGISTER = "REGISTER",
+//   RESET_PASSWORD = "RESET_PASSWORD",
+//   EMAIL_VERIFICATION = "EMAIL_VERIFICATION",
+// }
+
+// const LoginPage = () => {
+//   const wixClient = useWixClient();
+//   const router = useRouter();
+
+//   const isLoggedIn = wixClient.auth.loggedIn();
+
+//   if (isLoggedIn) {
+//     router.push("/");
+//   }
+
+//   const [mode, setMode] = useState(MODE.LOGIN);
+
+//   const [username, setUsername] = useState("");
+//   const [email, setEmail] = useState("");
+//   const [password, setPassword] = useState("");
+//   const [emailCode, setEmailCode] = useState("");
+//   const [isLoading, setIsLoading] = useState(false);
+//   const [error, setError] = useState("");
+//   const [message, setMessage] = useState("");
+
+//   const formTitle =
+//     mode === MODE.LOGIN
+//       ? "Log in"
+//       : mode === MODE.REGISTER
+//       ? "Register"
+//       : mode === MODE.RESET_PASSWORD
+//       ? "Reset Your Password"
+//       : "Verify Your Email";
+
+//   const buttonTitle =
+//     mode === MODE.LOGIN
+//       ? "Login"
+//       : mode === MODE.REGISTER
+//       ? "Register"
+//       : mode === MODE.RESET_PASSWORD
+//       ? "Reset"
+//       : "Verify";
+
+//   const handleSubmit = async (e: React.FormEvent) => {
+//     e.preventDefault();
+//     setIsLoading(true);
+//     setError("");
+
+//     try {
+//       let response;
+
+//       switch (mode) {
+//         case MODE.LOGIN:
+//           response = await wixClient.auth.login({
+//             email,
+//             password,
+//           });
+//           break;
+//         case MODE.REGISTER:
+//           response = await wixClient.auth.register({
+//             email,
+//             password,
+//             profile: { nickname: username },
+//           });
+//           break;
+//         case MODE.RESET_PASSWORD:
+//           response = await wixClient.auth.sendPasswordResetEmail(
+//             email,
+//             window.location.href
+//           );
+//           setMessage("Password reset email sent. Please check your e-mail.");
+//           break;
+//         case MODE.EMAIL_VERIFICATION:
+//           response = await wixClient.auth.processVerification({
+//             verificationCode: emailCode,
+//           });
+//           break;
+//         default:
+//           break;
+//       }
+
+//       switch (response?.loginState) {
+//         case LoginState.SUCCESS:
+//           setMessage("Successful! You are being redirected.");
+//           const tokens = await wixClient.auth.getMemberTokensForDirectLogin(
+//             response.data.sessionToken!
+//           );
+
+//           Cookies.set("refreshToken", JSON.stringify(tokens.refreshToken), {
+//             expires: 2,
+//           });
+//           wixClient.auth.setTokens(tokens);
+//           router.push("/");
+//           break;
+//         case LoginState.FAILURE:
+//           if (
+//             response.errorCode === "invalidEmail" ||
+//             response.errorCode === "invalidPassword"
+//           ) {
+//             setError("Invalid email or password!");
+//           } else if (response.errorCode === "emailAlreadyExists") {
+//             setError("Email already exists!");
+//           } else if (response.errorCode === "resetPassword") {
+//             setError("You need to reset your password!");
+//           } else {
+//             setError("Something went wrong!");
+//           }
+//         case LoginState.EMAIL_VERIFICATION_REQUIRED:
+//           setMode(MODE.EMAIL_VERIFICATION);
+//         case LoginState.OWNER_APPROVAL_REQUIRED:
+//           setMessage("Your account is pending approval");
+//         default:
+//           break;
+//       }
+//     } catch (err) {
+//       console.log(err);
+//       setError("Something went wrong!");
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   };
+
+//   return (
+//     <div className="h-[calc(100vh-80px)] px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64 flex items-center justify-center">
+//       <form className="flex flex-col gap-8" onSubmit={handleSubmit}>
+//         <h1 className="text-2xl font-semibold">{formTitle}</h1>
+//         {mode === MODE.REGISTER ? (
+//           <div className="flex flex-col gap-2">
+//             <label className="text-sm text-gray-700">Username</label>
+//             <input
+//               type="text"
+//               name="username"
+//               placeholder="john"
+//               className="ring-2 ring-gray-300 rounded-md p-4"
+//               onChange={(e) => setUsername(e.target.value)}
+//             />
+//           </div>
+//         ) : null}
+//         {mode !== MODE.EMAIL_VERIFICATION ? (
+//           <div className="flex flex-col gap-2">
+//             <label className="text-sm text-gray-700">E-mail</label>
+//             <input
+//               type="email"
+//               name="email"
+//               placeholder="john@gmail.com"
+//               className="ring-2 ring-gray-300 rounded-md p-4"
+//               onChange={(e) => setEmail(e.target.value)}
+//             />
+//           </div>
+//         ) : (
+//           <div className="flex flex-col gap-2">
+//             <label className="text-sm text-gray-700">Verification Code</label>
+//             <input
+//               type="text"
+//               name="emailCode"
+//               placeholder="Code"
+//               className="ring-2 ring-gray-300 rounded-md p-4"
+//               onChange={(e) => setEmailCode(e.target.value)}
+//             />
+//           </div>
+//         )}
+//         {mode === MODE.LOGIN || mode === MODE.REGISTER ? (
+//           <div className="flex flex-col gap-2">
+//             <label className="text-sm text-gray-700">Password</label>
+//             <input
+//               type="password"
+//               name="password"
+//               placeholder="Enter your password"
+//               className="ring-2 ring-gray-300 rounded-md p-4"
+//               onChange={(e) => setPassword(e.target.value)}
+//             />
+//           </div>
+//         ) : null}
+//         {mode === MODE.LOGIN && (
+//           <div
+//             className="text-sm underline cursor-pointer"
+//             onClick={() => setMode(MODE.RESET_PASSWORD)}
+//           >
+//             Forgot Password?
+//           </div>
+//         )}
+//         <button
+//           className="bg-lama text-white p-2 rounded-md disabled:bg-pink-200 disabled:cursor-not-allowed"
+//           disabled={isLoading}
+//         >
+//           {isLoading ? "Loading..." : buttonTitle}
+//         </button>
+//         {error && <div className="text-red-600">{error}</div>}
+//         {mode === MODE.LOGIN && (
+//           <div
+//             className="text-sm underline cursor-pointer"
+//             onClick={() => setMode(MODE.REGISTER)}
+//           >
+//             {"Don't"} have an account?
+//           </div>
+//         )}
+//         {mode === MODE.REGISTER && (
+//           <div
+//             className="text-sm underline cursor-pointer"
+//             onClick={() => setMode(MODE.LOGIN)}
+//           >
+//             Have and account?
+//           </div>
+//         )}
+//         {mode === MODE.RESET_PASSWORD && (
+//           <div
+//             className="text-sm underline cursor-pointer"
+//             onClick={() => setMode(MODE.LOGIN)}
+//           >
+//             Go back to Login
+//           </div>
+//         )}
+//         {message && <div className="text-green-600 text-sm">{message}</div>}
+//       </form>
+//     </div>
+//   );
+// };
+
+// export default LoginPage;
