@@ -1,5 +1,17 @@
+"use client"
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+
+
 import Link from "next/link";
-import Menu from "./Menu";
+import { MapPin, Menu, Search, ShoppingCart, User } from 'lucide-react';
 import Image from "next/image";
 import SearchBar from "./SearchBar";
 import dynamic from "next/dynamic";
@@ -14,10 +26,18 @@ const Navbar = () => {
       <div className="h-full flex items-center justify-between md:hidden">
         <Link href="/">
         <Image src="/logo.jpg" alt="" width={64} height={64} />
-            <div className="text-xl tracking-wide">MON </div>
+            <div className="text-xl tracking-wide hidden md:flex">MON </div>
         
         </Link>
-        <Menu />
+
+        {/* RIGHT */}
+        <div className="w-full justify-end flex items-end  gap-8 md:pl-[3rem]">
+        
+          <NavIcons />
+          <Menu />
+        </div>
+
+        {/* <Menu /> */}
       </div>
       {/* BIGGER SCREENS */}
       <div className="hidden md:flex items-center justify-between gap-8 h-full">
@@ -46,3 +66,27 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
+
+
+
+
+
+// <header className="border-b">
+//         <div className="container mx-auto px-4">
+//           <div className="flex h-16 items-center justify-between">
+//             <div className="flex items-center space-x-4">
+//               <Button variant="ghost" size="icon">
+//                 <Menu className="h-6 w-6" />
+//               </Button>
+//               <h1 className="text-2xl font-bold">bash</h1>
+//             </div>
+//             <div className="hidden md:flex items-center space-x-4">
+//               <Search className="h-6 w-6" />
+//               <MapPin className="h-6 w-6" />
+//               <User className="h-6 w-6" />
+//               <ShoppingCart className="h-6 w-6" />
+//             </div>
+//           </div>
+//         </div>
+//       </header>

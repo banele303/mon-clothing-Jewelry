@@ -1,16 +1,21 @@
+'use server'
+
+// Refactor wixClientServer to work without req
 import { OAuthStrategy, createClient } from "@wix/sdk";
 import { collections, products } from "@wix/stores";
 import { orders } from "@wix/ecom";
-import { cookies } from "next/headers";
-import { members } from '@wix/members';
+import { parse } from "cookie";
+import { members } from "@wix/members";
 
+// Refactor wixClientServer to remove dependency on `req`
 export const wixClientServer = async () => {
   let refreshToken;
 
-  try {
-    const cookieStore = cookies();
-    refreshToken = JSON.parse(cookieStore.get("refreshToken")?.value || "{}");
-  } catch (e) {}
+  // Access cookies directly or use a fallback strategy if on the client-side
+  if (typeof window !== "undefined") {
+    const cookies = parse(document.cookie);
+    refreshToken = JSON.parse(cookies.refreshToken || "{}");
+  }
 
   const wixClient = createClient({
     modules: {
