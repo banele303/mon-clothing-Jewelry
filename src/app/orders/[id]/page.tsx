@@ -2,7 +2,11 @@ import { wixClientServer } from "@/lib/wixClientServer";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-const OrderPage = async ({ params }: { params: { id: string } }) => {
+type Params = Promise<{ slug: string[] }>;
+
+export default async function OrderPage({ params }: { params: Params }) {
+const { slug } = await params;
+
   const id = params.id;
 
   const wixClient = await wixClientServer();
@@ -62,4 +66,4 @@ const OrderPage = async ({ params }: { params: { id: string } }) => {
   );
 };
 
-export default OrderPage;
+
