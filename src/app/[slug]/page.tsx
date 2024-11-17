@@ -6,7 +6,12 @@ import { wixClientServer } from "@/lib/wixClientServer";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
-const SinglePage = async ({ params }: { params: { slug: string } }) => {
+type Params = Promise<{ rcdId: string }>
+
+export default async function  SinglePage(props: { params: Params }) {
+  const params = await props.params;
+  const rcdId = params.rcdId;
+  
   const wixClient = await wixClientServer();
 
   const products = await wixClient.products
