@@ -6,11 +6,11 @@ import { wixClientServer } from "@/lib/wixClientServer";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
-type Params = Promise<{ rcdId: string }>
+type Params = Promise<{ slug: string[] }>;
 
-export default async function  SinglePage(props: { params: Params }) {
-  const params = await props.params;
-  const rcdId = params.rcdId;
+export default async function  SinglePage({ params }: { params: Params }) {
+
+  const { slug } = await params;
   
   const wixClient = await wixClientServer();
 
@@ -80,7 +80,7 @@ export default async function  SinglePage(props: { params: Params }) {
   );
 };
 
-export default SinglePage;
+
 
 
 
