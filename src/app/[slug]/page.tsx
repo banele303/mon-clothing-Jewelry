@@ -9,11 +9,11 @@ import { Suspense } from "react";
 import ProductList from "@/components/ProductList";
 import Skeleton from "@/components/Skeleton";
 
-interface PageProps {
+type PageProps = {
   params: {
     slug: string;
   };
-}
+};
 
 const SinglePage = async ({ params }: PageProps) => {
   const wixClient = await wixClientServer();
@@ -100,6 +100,7 @@ const SinglePage = async ({ params }: PageProps) => {
 };
 
 export default SinglePage;
+
 
 
 
