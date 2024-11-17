@@ -8,15 +8,16 @@ import { Suspense } from "react";
 
 type Params = Promise<{ slug: string[] }>;
 
-export default async function  SinglePage({ params }: { params: Params }) {
+export default async function SinglePage({ params }: { params: Params }) {
 
-  const { slug } = await params;
+  const resolvedParams = await params;
+  const { slug } = resolvedParams;
   
   const wixClient = await wixClientServer();
 
   const products = await wixClient.products
     .queryProducts()
-    .eq("slug", params.slug)
+    .eq("slug", slug)
     .find();
 
   if (!products.items[0]) {
@@ -79,6 +80,7 @@ export default async function  SinglePage({ params }: { params: Params }) {
     </div>
   );
 };
+
 
 
 
