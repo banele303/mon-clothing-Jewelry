@@ -1,4 +1,3 @@
-
 import Add from "@/components/Add";
 import CustomizeProducts from "@/components/CustomizeProducts";
 import ProductImages from "@/components/ProductImages";
@@ -10,20 +9,17 @@ import { Suspense } from "react";
 import ProductList from "@/components/ProductList";
 import Skeleton from "@/components/Skeleton";
 
-interface SinglePageProps {
-  params: {
-    slug: string;
-  };
-}
-
-const SinglePage = async ({ params }: SinglePageProps) => {
+// The params type will be inferred by Next.js, no need to manually define it
+const SinglePage = async ({ params }: { params: { slug: string } }) => {
   const wixClient = await wixClientServer();
 
+  // Fetch product data by slug
   const products = await wixClient.products
     .queryProducts()
     .eq("slug", params.slug)
     .find();
 
+  // Handle case where no product is found
   if (!products.items[0]) {
     return notFound();
   }
@@ -99,6 +95,7 @@ const SinglePage = async ({ params }: SinglePageProps) => {
 };
 
 export default SinglePage;
+
 
 
 
