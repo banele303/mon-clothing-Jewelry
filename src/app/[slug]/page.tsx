@@ -9,7 +9,7 @@ import { Suspense } from "react";
 import ProductList from "@/components/ProductList";
 import Skeleton from "@/components/Skeleton";
 
-// Ensure params is correctly typed as an object with the slug key
+// The params type will be inferred by Next.js, no need to manually define it
 const SinglePage = async ({ params }: { params: { slug: string } }) => {
   const wixClient = await wixClientServer();
 
@@ -95,7 +95,6 @@ const SinglePage = async ({ params }: { params: { slug: string } }) => {
 };
 
 export default SinglePage;
-
 
 
 
