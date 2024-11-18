@@ -1,6 +1,5 @@
 "use client"
 
-
 import { useState, useEffect } from "react";
 import UpdateButton from "@/components/UpdateButton";
 import { updateUser } from "@/lib/actions";
@@ -10,7 +9,7 @@ import Link from "next/link";
 import { format } from "timeago.js";
 
 type UserType = {
-  contactId: string;
+  contactId?: string | null;
   profile?: {
     nickname?: string;
   };
@@ -67,7 +66,7 @@ const ProfilePage = () => {
       <div className="w-full md:w-1/2">
         <h1 className="text-2xl">Profile</h1>
         <form action={updateUser} className="mt-12 flex flex-col gap-4">
-          <input type="text" hidden name="id" value={user.contactId} />
+          <input type="text" hidden name="id" value={user.contactId || ""} />
           <label className="text-sm text-gray-700">Username</label>
           <input
             type="text"
