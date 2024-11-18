@@ -1,4 +1,3 @@
-
 'use client'
 
 import { useEffect, useState } from "react";
@@ -6,13 +5,13 @@ import UpdateButton from "@/components/UpdateButton";
 import { updateUser } from "@/lib/actions";
 import { wixClientServer } from "@/lib/wixClientServer";
 import { members } from "@wix/members";
-import { Order as WixOrder } from "@wix/ecom";
+import { orders } from "@wix/ecom";
 import Link from "next/link";
 import { format } from "timeago.js";
 
-// Update the Order type to match the Wix API response
+// Define the Order type based on the Wix API response
 type Order = {
-  _id: string | null | undefined;
+  _id?: string | null;
   priceSummary?: {
     subtotal?: {
       amount?: number;
@@ -51,7 +50,7 @@ export default function ProfilePage() {
 
         setUserData(userResponse.member);
         // Convert Wix orders to our Order type
-        setOrders(orderResponse.orders.map((order: WixOrder): Order => ({
+        setOrders(orderResponse.orders.map((order): Order => ({
           _id: order._id,
           priceSummary: order.priceSummary,
           _createdDate: order._createdDate,
