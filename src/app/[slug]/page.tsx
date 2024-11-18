@@ -5,7 +5,7 @@ import Reviews from "@/components/Reviews";
 import { wixClientServer } from "@/lib/wixClientServer";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import DOMPurify from "dompurify";
+
 
 type Params = Promise<{ slug: string[] }>;
 
@@ -36,7 +36,8 @@ export default async function SinglePage({ params }: { params: Params }) {
       {/* TEXTS */}
       <div className="w-full lg:w-1/2 flex flex-col gap-6">
         <h1 className="text-4xl font-medium">{product.name}</h1>
-        <p dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product.description || "") }} />
+          <h3>{product.description}</h3>
+     
         <div className="h-[2px] bg-gray-100" />
         {product.price?.price === product.price?.discountedPrice ? (
           <h2 className="font-medium text-2xl">R{product.price?.price}</h2>
