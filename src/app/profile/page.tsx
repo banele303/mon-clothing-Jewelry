@@ -1,3 +1,5 @@
+"use client"
+
 import { useState, useEffect } from "react";
 import UpdateButton from "@/components/UpdateButton";
 import { updateUser } from "@/lib/actions";
