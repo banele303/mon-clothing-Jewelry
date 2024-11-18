@@ -36,7 +36,7 @@ export default async function SinglePage({ params }: { params: Params }) {
       {/* TEXTS */}
       <div className="w-full lg:w-1/2 flex flex-col gap-6">
         <h1 className="text-4xl font-medium">{product.name}</h1>
-        <h3 className="pt-2 text-[16px]>{product.description}</h3>
+        <p dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product.description || "") }} />
         <div className="h-[2px] bg-gray-100" />
         {product.price?.price === product.price?.discountedPrice ? (
           <h2 className="font-medium text-2xl">R{product.price?.price}</h2>
@@ -68,8 +68,7 @@ export default async function SinglePage({ params }: { params: Params }) {
         {product.additionalInfoSections?.map((section: any) => (
           <div className="text-sm" key={section.title}>
             <h4 className="font-medium mb-4">{section.title}</h4>
-             <h3>{section.description}</h3>
-           
+            <h3>{section.description}</h3>
           </div>
         ))}
         <div className="h-[2px] bg-gray-100" />
@@ -82,6 +81,7 @@ export default async function SinglePage({ params }: { params: Params }) {
     </div>
   );
 };
+
 
 
 
