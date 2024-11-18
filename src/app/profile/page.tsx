@@ -6,12 +6,13 @@ import UpdateButton from "@/components/UpdateButton";
 import { updateUser } from "@/lib/actions";
 import { wixClientServer } from "@/lib/wixClientServer";
 import { members } from "@wix/members";
+import { Order as WixOrder } from "@wix/ecom";
 import Link from "next/link";
 import { format } from "timeago.js";
 
-// Add proper typing for orders
+// Update the Order type to match the Wix API response
 type Order = {
-  _id: string;
+  _id: string | null | undefined;
   priceSummary?: {
     subtotal?: {
       amount?: number;
@@ -49,7 +50,13 @@ export default function ProfilePage() {
         });
 
         setUserData(userResponse.member);
-        setOrders(orderResponse.orders);
+        // Convert Wix orders to our Order type
+        setOrders(orderResponse.orders.map((order: WixOrder): Order => ({
+          _id: order._id,
+          priceSummary: order.priceSummary,
+          _createdDate: order._createdDate,
+          status: order.status,
+        })));
       } catch (err) {
         setError("Failed to load profile data");
         console.error("Profile loading error:", err);
@@ -165,7 +172,7 @@ export default function ProfilePage() {
                 key={order._id}
                 className="flex justify-between px-4 py-3 rounded-md hover:bg-green-50 even:bg-slate-100 transition-colors"
               >
-                <span className="w-1/4 truncate">{order._id.substring(0, 10)}...</span>
+                <span className="w-1/4 truncate">{order._id?.substring(0, 10)}...</span>
                 <span className="w-1/4">
                   ${order.priceSummary?.subtotal?.amount?.toFixed(2) || '0.00'}
                 </span>
@@ -181,7 +188,6 @@ export default function ProfilePage() {
     </div>
   );
 }
-
 
 // 'use client'
 
