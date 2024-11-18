@@ -36,10 +36,55 @@ export default async function SinglePage({ params }: { params: Params }) {
       {/* TEXTS */}
       <div className="w-full lg:w-1/2 flex flex-col gap-6">
         <h1 className="text-4xl font-medium">{product.name}</h1>
-          <h3>{product.description}</h3>
+          <div>{product.description}</div>
      
         <div className="h-[2px] bg-gray-100" />
+
+
+<div className="h-[2px] bg-gray-100" />
         {product.price?.price === product.price?.discountedPrice ? (
+          <h2 className="font-medium text-2xl">R{product.price?.price}</h2>
+        ) : (
+          <div className="flex items-center gap-4">
+            <h3 className="text-xl text-gray-500 line-through">
+              ${product.price?.price}
+            </h3>
+            <h2 className="font-medium text-2xl">
+              ${product.price?.discountedPrice}
+            </h2>
+          </div>
+        )}
+        <div className="h-[2px] bg-gray-100" />
+        {product.variants && product.productOptions ? (
+          <CustomizeProducts
+            productId={product._id!}
+            variants={product.variants}
+            productOptions={product.productOptions}
+          />
+        ) : (
+          <Add
+            productId={product._id!}
+            variantId="00000000-0000-0000-0000-000000000000"
+            stockNumber={product.stock?.quantity || 0}
+          />
+        )}
+        <div className="h-[2px] bg-gray-100" />
+        {product.additionalInfoSections?.map((section: any) => (
+          <div className="text-sm" key={section.title}>
+            <h4 className="font-medium mb-4">{section.title}</h4>
+  <div classname="text-[16px]">{section.description}</div>
+            {/* <h4>{section.description}</h4> */}
+          </div>
+        ))}
+        <div className="h-[2px] bg-gray-100" />
+        {/* REVIEWS */}
+        <h1 className="text-2xl">User Reviews</h1>
+        <Suspense fallback="Loading...">
+          <Reviews productId={product._id!} />
+        </Suspense>
+      </div>
+        
+{/*         {product.price?.price === product.price?.discountedPrice ? (
           <h2 className="font-medium text-2xl">R{product.price?.price}</h2>
         ) : (
           <div className="flex items-center gap-4">
@@ -74,12 +119,7 @@ export default async function SinglePage({ params }: { params: Params }) {
         ))}
         <div className="h-[2px] bg-gray-100" />
         {/* REVIEWS */}
-        <h1 className="text-2xl">User Reviews</h1>
-        <Suspense fallback="Loading...">
-          <Reviews productId={product._id!} />
-        </Suspense>
-      </div>
-    </div>
+       
   );
 };
 
