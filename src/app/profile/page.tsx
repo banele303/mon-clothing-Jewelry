@@ -1,7 +1,9 @@
 'use client'
 
 import { useEffect, useState } from "react";
-import UpdateButton from "@/components/UpdateButton";
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { updateUser } from "@/lib/actions";
 import { wixClientServer } from "@/lib/wixClientServer";
 import { members } from "@wix/members";
@@ -57,7 +59,7 @@ export default function ProfilePage() {
               amount: order.priceSummary?.subtotal?.amount
             }
           },
-          _createdDate: order._createdDate,
+          _createdDate: order._createdDate ? new Date(order._createdDate).toISOString() : undefined,
           status: order.status,
         })));
       } catch (err) {
@@ -103,62 +105,58 @@ export default function ProfilePage() {
           <input type="hidden" name="id" value={userData.contactId} />
           
           <div className="space-y-2">
-            <label className="text-sm text-gray-700 block">Username</label>
-            <input
-              type="text"
+            <Label htmlFor="username">Username</Label>
+            <Input
+              id="username"
               name="username"
               defaultValue={userData.profile?.nickname || ""}
               placeholder="john"
-              className="w-full ring-1 ring-gray-300 rounded-md p-2 max-w-96"
             />
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm text-gray-700 block">First Name</label>
-            <input
-              type="text"
+            <Label htmlFor="firstName">First Name</Label>
+            <Input
+              id="firstName"
               name="firstName"
               defaultValue={userData.contact?.firstName || ""}
               placeholder="John"
-              className="w-full ring-1 ring-gray-300 rounded-md p-2 max-w-96"
             />
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm text-gray-700 block">Surname</label>
-            <input
-              type="text"
+            <Label htmlFor="lastName">Surname</Label>
+            <Input
+              id="lastName"
               name="lastName"
               defaultValue={userData.contact?.lastName || ""}
               placeholder="Doe"
-              className="w-full ring-1 ring-gray-300 rounded-md p-2 max-w-96"
             />
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm text-gray-700 block">Phone</label>
-            <input
-              type="text"
+            <Label htmlFor="phone">Phone</Label>
+            <Input
+              id="phone"
               name="phone"
               defaultValue={userData.contact?.phones?.[0] || ""}
               placeholder="+1234567"
-              className="w-full ring-1 ring-gray-300 rounded-md p-2 max-w-96"
             />
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm text-gray-700 block">E-mail</label>
-            <input
-              type="email"
+            <Label htmlFor="email">E-mail</Label>
+            <Input
+              id="email"
               name="email"
+              type="email"
               defaultValue={userData.loginEmail || ""}
               placeholder="john@gmail.com"
-              className="w-full ring-1 ring-gray-300 rounded-md p-2 max-w-96"
             />
           </div>
 
           <div className="pt-4">
-            <UpdateButton />
+            <Button type="submit">Update Profile</Button>
           </div>
         </form>
       </div>
