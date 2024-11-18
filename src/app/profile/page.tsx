@@ -1,5 +1,6 @@
 "use client"
 
+
 import { useState, useEffect } from "react";
 import UpdateButton from "@/components/UpdateButton";
 import { updateUser } from "@/lib/actions";
@@ -8,9 +9,22 @@ import { members } from "@wix/members";
 import Link from "next/link";
 import { format } from "timeago.js";
 
+type UserType = {
+  contactId: string;
+  profile?: {
+    nickname?: string;
+  };
+  contact?: {
+    firstName?: string;
+    lastName?: string;
+    phones?: string[];
+  };
+  loginEmail?: string;
+};
+
 const ProfilePage = () => {
-  const [user, setUser] = useState(null);
-  const [orders, setOrders] = useState(null);
+  const [user, setUser] = useState<UserType | null>(null);
+  const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -120,7 +134,6 @@ const ProfilePage = () => {
 };
 
 export default ProfilePage;
-
 
 
 // import UpdateButton from "@/components/UpdateButton";
