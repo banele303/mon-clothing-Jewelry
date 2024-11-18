@@ -9,12 +9,12 @@ import { orders } from "@wix/ecom";
 import Link from "next/link";
 import { format } from "timeago.js";
 
-// Define the Order type based on the Wix API response
+// Update the Order type to match the Wix API response structure
 type Order = {
   _id?: string | null;
   priceSummary?: {
     subtotal?: {
-      amount?: number;
+      amount?: string;
     };
   };
   _createdDate?: string;
@@ -52,7 +52,11 @@ export default function ProfilePage() {
         // Convert Wix orders to our Order type
         setOrders(orderResponse.orders.map((order): Order => ({
           _id: order._id,
-          priceSummary: order.priceSummary,
+          priceSummary: {
+            subtotal: {
+              amount: order.priceSummary?.subtotal?.amount
+            }
+          },
           _createdDate: order._createdDate,
           status: order.status,
         })));
@@ -173,7 +177,7 @@ export default function ProfilePage() {
               >
                 <span className="w-1/4 truncate">{order._id?.substring(0, 10)}...</span>
                 <span className="w-1/4">
-                  ${order.priceSummary?.subtotal?.amount?.toFixed(2) || '0.00'}
+                  ${parseFloat(order.priceSummary?.subtotal?.amount || '0').toFixed(2)}
                 </span>
                 {order._createdDate && (
                   <span className="w-1/4">{format(order._createdDate)}</span>
