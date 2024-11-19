@@ -11,7 +11,7 @@ const slides = [
     id: 1,
     title: "Summer Sale Collections",
     description: "Sale! Buy 3 & Get Up to 50% off!",
-    img: "/himg3.jpeg",
+    img: "/himg8.jpeg",
     url: "/",
     bg: "bg-gradient-to-r from-yellow-100 to-pink-100",
   },
@@ -19,7 +19,7 @@ const slides = [
     id: 2,
     title: "summer Sale Collections",
     description: "Sale! Up to 20% off!",
-    img: "/img2.jpg",
+    img: "/img3.jpg",
     url: "/",
     bg: "bg-gradient-to-r from-pink-100 to-blue-100",
   },
@@ -27,7 +27,7 @@ const slides = [
     id: 3,
     title: "Spring Sale Collections",
     description: "Sale! Up to 50% off!",
-    img: "/himg3.jpeg",
+    img: "/himg2.jpeg",
     url: "/",
     bg: "bg-gradient-to-r from-blue-100 to-yellow-100",
   },
@@ -78,7 +78,7 @@ export default function ModernSlider() {
               </Link>
             </div>
             {/* IMAGE CONTAINER */}
-            <div className="w-full md:w-1/2 h-1/3 md:h-full relative overflow-hidden">
+            <div className="w-full md:w-1/2 h-1/2 md:h-1/2 relative overflow-hidden px-[2rem] rounded-md">
               <Image
                 src={slide.img}
                 alt={slide.title}
