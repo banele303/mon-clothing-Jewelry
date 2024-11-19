@@ -11,16 +11,14 @@ import { X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 
-interface CartItem extends currentCart.LineItem {
+type CartItem = currentCart.LineItem & {
   _id: string
   image?: { url: string }
   productName?: { original: string }
-  price?: { amount: number }
 }
 
-interface Cart extends currentCart.Cart {
+interface Cart extends Omit<currentCart.Cart, 'lineItems'> {
   lineItems: CartItem[]
-  subtotal?: { amount: number }
 }
 
 const CartModal = ({ onClose }: { onClose: () => void }) => {
@@ -64,10 +62,7 @@ const CartModal = ({ onClose }: { onClose: () => void }) => {
   }
 
   const getSubtotal = () => {
-    if (cart.subtotal?.amount) {
-      return cart.subtotal.amount
-    }
-    return cart.lineItems.reduce((total, item) => total + (item.price?.amount || 0) * (item.quantity || 1), 0)
+    return cart.subtotal?.amount || '0'
   }
 
   return (
@@ -102,12 +97,12 @@ const CartModal = ({ onClose }: { onClose: () => void }) => {
                   <div className="flex flex-col justify-between flex-grow">
                     <div>
                       <h3 className="font-semibold">{item.productName?.original}</h3>
-                      <p className="text-sm text-gray-500">{item.availability?.status}</p>
+                      <p className="text-sm text-gray-500">{item.physicalProperties?.sku}</p>
                     </div>
                     <div className="flex justify-between items-center mt-2">
                       <span className="text-sm text-gray-500">Qty. {item.quantity}</span>
                       <div className="flex items-center gap-2">
-                        <span className="font-semibold">R{item.price?.amount || 0}</span>
+                        <span className="font-semibold">R{item.price?.amount}</span>
                         <Button
                           variant="ghost"
                           size="sm"
