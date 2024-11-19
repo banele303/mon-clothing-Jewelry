@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef } from "react";
 import Image from "next/image";
 import { useCartStore } from "@/hooks/useCartStore";
 import { media as wixMedia } from "@wix/sdk";
 import { useWixClient } from "@/hooks/useWixClient";
 import { currentCart } from "@wix/ecom";
-import { X } from 'lucide-react';
+import { X } from "lucide-react";
 
 const CartModal = ({ onClose }: { onClose: () => void }) => {
   const wixClient = useWixClient();
@@ -20,9 +20,9 @@ const CartModal = ({ onClose }: { onClose: () => void }) => {
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [onClose]);
 
@@ -51,12 +51,16 @@ const CartModal = ({ onClose }: { onClose: () => void }) => {
   };
 
   const getSubtotal = () => {
-    if ('subtotal' in cart && cart.subtotal?.amount) {
+    if ("subtotal" in cart && cart.subtotal?.amount) {
       return Number(cart.subtotal.amount).toFixed(2);
     }
-    return cart.lineItems.reduce((total, item) => 
-      total + (Number(item.price?.amount) || 0) * (item.quantity || 1), 0
-    ).toFixed(2);
+    return cart.lineItems
+      .reduce(
+        (total, item) =>
+          total + (Number(item.price?.amount) || 0) * (item.quantity || 1),
+        0
+      )
+      .toFixed(2);
   };
 
   return (
@@ -97,12 +101,20 @@ const CartModal = ({ onClose }: { onClose: () => void }) => {
                     />
                   )}
                   <div className="flex-grow">
-                    <h3 className="font-semibold">{item.productName?.original}</h3>
-                    <p className="text-sm text-gray-500">{item.physicalProperties?.sku}</p>
+                    <h3 className="font-semibold">
+                      {item.productName?.original}
+                    </h3>
+                    <p className="text-sm text-gray-500">
+                      {item.physicalProperties?.sku}
+                    </p>
                     <div className="flex justify-between items-center mt-2">
-                      <span className="text-sm text-gray-500">Qty. {item.quantity}</span>
+                      <span className="text-sm text-gray-500">
+                        Qty. {item.quantity}
+                      </span>
                       <div className="flex items-center gap-2">
-                        <span className="font-semibold">R{item.price?.amount}</span>
+                        <span className="font-semibold">
+                          R{item.price?.amount}
+                        </span>
                         <button
                           className="text-sm text-blue-500 hover:text-blue-700 transition-colors"
                           onClick={() => removeItem(wixClient, item._id!)}
@@ -135,7 +147,9 @@ const CartModal = ({ onClose }: { onClose: () => void }) => {
             </button>
             <button
               className="w-full py-2 px-4 bg-black text-white rounded-md hover:bg-gray-800 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
-              disabled={isLoading || !cart.lineItems || cart.lineItems.length === 0}
+              disabled={
+                isLoading || !cart.lineItems || cart.lineItems.length === 0
+              }
               onClick={handleCheckout}
             >
               Checkout
@@ -143,6 +157,12 @@ const CartModal = ({ onClose }: { onClose: () => void }) => {
           </div>
         </div>
       </div>
+    </div>
+  );
+};
+
+export default CartModal;
+
     
 
 
