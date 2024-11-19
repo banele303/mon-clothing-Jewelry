@@ -10,8 +10,9 @@ import Cookies from "js-cookie";
 import { useCartStore } from "@/hooks/useCartStore";
 
 const NavIcons = () => {
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
@@ -19,6 +20,14 @@ const NavIcons = () => {
 
   const wixClient = useWixClient();
   const isLoggedIn = wixClient.auth.loggedIn();
+
+
+   const handleOpenCart = () => {
+     setIsCartOpen(true);
+   };
+ const handleCloseCart = () => {    
+   setIsCartOpen(false);
+  };
 
   // TEMPORARY
   // const isLoggedIn = false;
@@ -91,16 +100,48 @@ const NavIcons = () => {
       />
       <div
         className="relative cursor-pointer"
-        onClick={() => setIsCartOpen((prev) => !prev)}
+{/*         onClick={() => setIsCartOpen((prev) => !prev)} */}
       >
-        <Image src="/cart.png" alt="" width={22} height={22} />
+        <button onClick={handleOpenCart}> <Image src="/cart.png" alt="" width={22} height={22} /> </button>
         <div className="absolute -top-4 -right-4 w-6 h-6 bg-lama rounded-full text-white text-sm flex items-center justify-center">
           {counter}
         </div>
       </div>
-      {isCartOpen && <CartModal />}
+
+       {isCartOpen && <CartModal onClose={handleCloseCart} />}
+      
+    
     </div>
   );
 };
 
 export default NavIcons;
+
+
+
+
+
+
+{/*       
+
+  
+//     const ParentComponent = () => {
+//   const [isCartOpen, setIsCartOpen] = useState(false);
+
+//   const handleOpenCart = () => {
+//     setIsCartOpen(true);
+//   };
+
+//   const handleCloseCart = () => {
+//     setIsCartOpen(false);
+//   };
+
+//   return (
+//     <div>
+//       <button onClick={handleOpenCart}>Open Cart</button>
+//       {isCartOpen && <CartModal onClose={handleCloseCart} />}
+//     </div>
+//   );
+// };
+
+// export default ParentComponent; */}
