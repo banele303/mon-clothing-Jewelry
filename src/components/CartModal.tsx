@@ -196,6 +196,7 @@ const CartModal = ({ onClose }: CartModalProps) => {
 export default CartModal;
 
 
+
     
 
 
