@@ -17,8 +17,8 @@ const slides = [
   },
   {
     id: 2,
-    title: "Winter Sale Collections",
-    description: "Sale! Up to 50% off!",
+    title: "summer Sale Collections",
+    description: "Sale! Up to 20% off!",
     img: "/img2.jpg",
     url: "/",
     bg: "bg-gradient-to-r from-pink-100 to-blue-100",
@@ -78,7 +78,7 @@ export default function ModernSlider() {
               </Link>
             </div>
             {/* IMAGE CONTAINER */}
-            <div className="w-full md:w-1/2 h-1/2 md:h-full relative overflow-hidden">
+            <div className="w-full md:w-1/2 h-1/3 md:h-full relative overflow-hidden">
               <Image
                 src={slide.img}
                 alt={slide.title}
