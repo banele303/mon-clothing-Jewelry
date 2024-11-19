@@ -10,7 +10,6 @@ import Cookies from "js-cookie";
 import { useCartStore } from "@/hooks/useCartStore";
 
 const NavIcons = () => {
-  
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -21,16 +20,12 @@ const NavIcons = () => {
   const wixClient = useWixClient();
   const isLoggedIn = wixClient.auth.loggedIn();
 
-
-   const handleOpenCart = () => {
-     setIsCartOpen(true);
-   };
- const handleCloseCart = () => {    
-   setIsCartOpen(false);
+  const handleOpenCart = () => {
+    setIsCartOpen(true);
   };
-
-  // TEMPORARY
-  // const isLoggedIn = false;
+  const handleCloseCart = () => {    
+    setIsCartOpen(false);
+  };
 
   const handleProfile = () => {
     if (!isLoggedIn) {
@@ -40,22 +35,6 @@ const NavIcons = () => {
     }
   };
 
-  // AUTH WITH WIX-MANAGED AUTH
-
-  // const wixClient = useWixClient();
-
-  // const login = async () => {
-  //   const loginRequestData = wixClient.auth.generateOAuthData(
-  //     "http://localhost:3000"
-  //   );
-
-  //   console.log(loginRequestData);
-
-  //   localStorage.setItem("oAuthRedirectData", JSON.stringify(loginRequestData));
-  //   const { authUrl } = await wixClient.auth.getAuthUrl(loginRequestData);
-  //   window.location.href = authUrl;
-  // };
-
   const handleLogout = async () => {
     setIsLoading(true);
     Cookies.remove("refreshToken");
@@ -64,7 +43,6 @@ const NavIcons = () => {
     setIsProfileOpen(false);
     router.push(logoutUrl);
   };
-
 
   const { cart, counter, getCart } = useCartStore();
 
@@ -80,7 +58,6 @@ const NavIcons = () => {
         width={22}
         height={22}
         className="cursor-pointer"
-        // onClick={login}
         onClick={handleProfile}
       />
       {isProfileOpen && (
@@ -98,25 +75,21 @@ const NavIcons = () => {
         height={22}
         className="cursor-pointer"
       />
-      <div
-        className="relative cursor-pointer"
-{/*         onClick={() => setIsCartOpen((prev) => !prev)} */}
-      >
-        <button onClick={handleOpenCart}> <Image src="/cart.png" alt="" width={22} height={22} /> </button>
+      <div className="relative cursor-pointer">
+        <button onClick={handleOpenCart}>
+          <Image src="/cart.png" alt="" width={22} height={22} />
+        </button>
         <div className="absolute -top-4 -right-4 w-6 h-6 bg-lama rounded-full text-white text-sm flex items-center justify-center">
           {counter}
         </div>
       </div>
 
-       {isCartOpen && <CartModal onClose={handleCloseCart} />}
-      
-    
+      {isCartOpen && <CartModal onClose={handleCloseCart} />}
     </div>
   );
 };
 
 export default NavIcons;
-
 
 
 
