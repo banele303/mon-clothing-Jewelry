@@ -67,9 +67,9 @@ const ProductList = async ({
         <div className="container mx-auto px-4">
           <div className="flex space-x-8 overflow-x-auto py-4">
             <Button variant="ghost">All</Button>
-            <Button variant="ghost">Black Friday</Button>
-            <Button variant="ghost">Women</Button>
-            <Button variant="ghost">Men</Button>
+            <Button variant="ghost">Earrings</Button>
+            <Button variant="ghost">Bracelets</Button>
+            <Button variant="ghost">Necles</Button>
           </div>
         </div>
       </nav>
@@ -77,8 +77,8 @@ const ProductList = async ({
       {/* Shop Section */}
       <main className="container mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
-          <h2 className="text-2xl font-bold">Shop</h2>
-          <span className="text-muted-foreground">1512 items</span>
+          <h2 className="text-2xl blue-800 font-bold">Shop</h2>
+          <span className="text-muted-foreground blue-400">112 items</span>
         </div>
 
         <div className="flex items-center justify-between mb-8">
