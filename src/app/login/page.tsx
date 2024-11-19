@@ -44,6 +44,17 @@ export default function LoginPage() {
     }
   }, [wixClient, router]);
 
+  const handleLogout = async () => {
+    try {
+      await wixClient.auth.logout();
+      Cookies.remove("refreshToken");
+      router.push("/login");
+    } catch (error) {
+      console.error("Logout error:", error);
+      setError("An error occurred while logging out. Please try again.");
+    }
+  };
+
   const formTitle = {
     [MODE.LOGIN]: "Log in",
     [MODE.REGISTER]: "Sign up",
@@ -154,7 +165,7 @@ export default function LoginPage() {
           </h2>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm -space-y-px">
+          <div className="rounded-md shadow-sm space-y-4">
             {mode === MODE.REGISTER && (
               <div>
                 <label htmlFor="username" className="sr-only">
@@ -166,7 +177,7 @@ export default function LoginPage() {
                   type="text"
                   required
                   autoComplete="username"
-                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                  className="appearance-none block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   placeholder="Username"
                   onChange={(e) => setUsername(e.target.value)}
                 />
@@ -183,7 +194,7 @@ export default function LoginPage() {
                   type="email"
                   autoComplete="email"
                   required
-                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                  className="appearance-none block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   placeholder="Email address"
                   onChange={(e) => setEmail(e.target.value)}
                 />
@@ -200,7 +211,7 @@ export default function LoginPage() {
                   type="text"
                   autoComplete="one-time-code"
                   required
-                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                  className="appearance-none block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   placeholder="Verification Code"
                   onChange={(e) => setEmailCode(e.target.value)}
                 />
@@ -217,7 +228,7 @@ export default function LoginPage() {
                     type="password"
                     autoComplete="current-password"
                     required
-                    className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                    className="appearance-none block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     placeholder="Password"
                     onChange={(e) => setPassword(e.target.value)}
                   />
@@ -225,7 +236,6 @@ export default function LoginPage() {
               )
             )}
           </div>
-
           <div className="flex items-center justify-between">
             {mode === MODE.LOGIN && (
               <div className="text-sm">
@@ -242,7 +252,6 @@ export default function LoginPage() {
               </div>
             )}
           </div>
-
           <div>
             <button
               type="submit"
@@ -268,43 +277,24 @@ export default function LoginPage() {
                     <path
                       className="opacity-75"
                       fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                      d="M4 12a8 8 0 018-8v8H4z"
                     />
                   </svg>
-                  Loading...
+                  Processing...
                 </span>
               ) : (
                 buttonTitle
               )}
             </button>
           </div>
+          {message && <div className="text-green-500 text-center">{message}</div>}
+          {error && <div className="text-red-500 text-center">{error}</div>}
         </form>
-        {error && (
-          <div className="text-red-600 text-sm text-center mt-4">{error}</div>
-        )}
-        {message && (
-          <div className="text-green-600 text-sm text-center mt-4">{message}</div>
-        )}
-        <div className="mt-4 text-center">
-          <button
-            onClick={() => {
-              setError("");
-              setMessage("");
-              setMode((prev) =>
-                prev === MODE.LOGIN ? MODE.REGISTER : MODE.LOGIN
-              );
-            }}
-            className="text-indigo-600 hover:underline"
-          >
-            {mode === MODE.LOGIN
-              ? "Don't have an account? Sign up"
-              : "Already have an account? Log in"}
-          </button>
-        </div>
       </div>
     </div>
   );
 }
+
 
 
 
