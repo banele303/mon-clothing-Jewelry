@@ -50,6 +50,15 @@ const CartModal = ({ onClose }: { onClose: () => void }) => {
     }
   };
 
+  const getSubtotal = () => {
+    if ('subtotal' in cart && cart.subtotal?.amount) {
+      return Number(cart.subtotal.amount).toFixed(2);
+    }
+    return cart.lineItems.reduce((total, item) => 
+      total + (Number(item.price?.amount) || 0) * (item.quantity || 1), 0
+    ).toFixed(2);
+  };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div
@@ -112,7 +121,7 @@ const CartModal = ({ onClose }: { onClose: () => void }) => {
         <div className="p-4 sm:p-6 border-t">
           <div className="flex items-center justify-between font-semibold mb-4">
             <span>Subtotal</span>
-            <span>R{cart.subtotal?.amount || 0}</span>
+            <span>R{getSubtotal()}</span>
           </div>
           <p className="text-gray-500 text-sm mb-4 text-center">
             Shipping and taxes calculated at checkout.
@@ -134,11 +143,7 @@ const CartModal = ({ onClose }: { onClose: () => void }) => {
           </div>
         </div>
       </div>
-    </div>
-  );
-};
-
-export default CartModal;
+    
 
 
 
