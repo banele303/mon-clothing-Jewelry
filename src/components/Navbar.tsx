@@ -15,10 +15,9 @@ import { MapPin, Menu, Search, ShoppingCart, User } from 'lucide-react';
 import Image from "next/image";
 import SearchBar from "./SearchBar";
 import dynamic from "next/dynamic";
-// import NavIcons from "./NavIcons";
+import MenuPhone from "./Menu";
 
 const NavIcons = dynamic(() => import("./NavIcons"), { ssr: false });
-const Menu  = dynamic(() => import("./Menu"), { ssr: false });
 
 const Navbar = () => {
   return (
@@ -35,10 +34,10 @@ const Navbar = () => {
         <div className="w-full justify-end flex items-end  gap-8 md:pl-[3rem]">
         
           <NavIcons />
-          <Menu />
+          <MenuPhone />
         </div>
 
-        <Menu />
+      
       </div>
       {/* BIGGER SCREENS */}
       <div className="hidden md:flex items-center justify-between gap-8 h-full">
