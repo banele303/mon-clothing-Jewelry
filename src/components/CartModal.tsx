@@ -1,123 +1,136 @@
-"use client";
+'use client'
 
-import Image from "next/image";
-import { useCartStore } from "@/hooks/useCartStore";
-import { media as wixMedia } from "@wix/sdk";
-import { useWixClient } from "@/hooks/useWixClient";
-import { currentCart } from "@wix/ecom";
+import { useState, useEffect, useRef } from 'react'
+import Image from 'next/image'
+import { useCartStore } from '@/hooks/useCartStore'
+import { media as wixMedia } from '@wix/sdk'
+import { useWixClient } from '@/hooks/useWixClient'
+import { currentCart } from '@wix/ecom'
+import { X } from 'lucide-react'
 
-const CartModal = () => {
-  const wixClient = useWixClient();
-  const { cart, isLoading, removeItem } = useCartStore();
+import { Button } from '@/components/ui/button'
+import { ScrollArea } from '@/components/ui/scroll-area'
+
+const CartModal = ({ onClose }: { onClose: () => void }) => {
+  const wixClient = useWixClient()
+  const { cart, isLoading, removeItem } = useCartStore()
+  const modalRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+        onClose()
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [onClose])
 
   const handleCheckout = async () => {
     try {
-      const checkout =
-        await wixClient.currentCart.createCheckoutFromCurrentCart({
-          channelType: currentCart.ChannelType.WEB,
-        });
+      const checkout = await wixClient.currentCart.createCheckoutFromCurrentCart({
+        channelType: currentCart.ChannelType.WEB,
+      })
 
-      const { redirectSession } =
-        await wixClient.redirects.createRedirectSession({
-          ecomCheckout: { checkoutId: checkout.checkoutId },
-          callbacks: {
-            postFlowUrl: window.location.origin,
-            thankYouPageUrl: `${window.location.origin}/success`,
-          },
-        });
+      const { redirectSession } = await wixClient.redirects.createRedirectSession({
+        ecomCheckout: { checkoutId: checkout.checkoutId },
+        callbacks: {
+          postFlowUrl: window.location.origin,
+          thankYouPageUrl: `${window.location.origin}/success`,
+        },
+      })
 
       if (redirectSession?.fullUrl) {
-        window.location.href = redirectSession.fullUrl;
+        window.location.href = redirectSession.fullUrl
       }
     } catch (err) {
-      console.log(err);
+      console.log(err)
     }
-  };
+  }
 
   return (
-    <div className="w-full max-w-md mx-auto p-4 rounded-md shadow-lg bg-white top-12 right-0 flex flex-col gap-6 z-20">
-      {!cart.lineItems ? (
-        <div className="text-center">Cart is Empty</div>
-      ) : (
-        <>
-          <h2 className="text-xl font-semibold text-center">Shopping Cart</h2>
-          <div className="flex flex-col gap-8">
-            {cart.lineItems.map((item) => (
-              <div className="flex gap-4" key={item._id}>
-                {item.image && (
-                  <Image
-                    src={wixMedia.getScaledToFillImageUrl(
-                      item.image,
-                      72,
-                      96,
-                      {}
-                    )}
-                    alt=""
-                    width={72}
-                    height={96}
-                    className="object-cover rounded-md zoomable"
-                  />
-                )}
-                <div className="flex flex-col justify-between w-full">
-                  <div className="">
-                    <div className="flex items-center justify-between gap-8">
-                      <h3 className="font-semibold">
-                        {item.productName?.original}
-                      </h3>
-                      <div className="p-1 bg-gray-50 rounded-sm flex items-center gap-2">
-                        {item.quantity && item.quantity > 1 && (
-                          <div className="text-xs text-green-500">
-                            {item.quantity} x{" "}
-                          </div>
-                        )}
-                        R{item.price?.amount}
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div
+        ref={modalRef}
+        className="w-full max-w-md bg-white rounded-lg shadow-xl overflow-hidden"
+      >
+        <div className="p-4 sm:p-6 flex justify-between items-center border-b">
+          <h2 className="text-xl font-semibold">Shopping Cart</h2>
+          <Button variant="ghost" size="icon" onClick={onClose}>
+            <X className="h-6 w-6" />
+            <span className="sr-only">Close cart</span>
+          </Button>
+        </div>
+        <ScrollArea className="h-[60vh] sm:h-[70vh]">
+          {!cart.lineItems || cart.lineItems.length === 0 ? (
+            <div className="text-center p-4">Cart is Empty</div>
+          ) : (
+            <div className="p-4 sm:p-6 flex flex-col gap-6">
+              {cart.lineItems.map((item) => (
+                <div key={item._id} className="flex gap-4 items-start">
+                  {item.image && (
+                    <Image
+                      src={wixMedia.getScaledToFillImageUrl(item.image, 72, 96, {})}
+                      alt=""
+                      width={72}
+                      height={96}
+                      className="object-cover rounded-md"
+                    />
+                  )}
+                  <div className="flex flex-col justify-between flex-grow">
+                    <div>
+                      <h3 className="font-semibold">{item.productName?.original}</h3>
+                      <p className="text-sm text-gray-500">{item.availability?.status}</p>
+                    </div>
+                    <div className="flex justify-between items-center mt-2">
+                      <span className="text-sm text-gray-500">Qty. {item.quantity}</span>
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold">R{item.price?.amount}</span>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removeItem(wixClient, item._id!)}
+                        >
+                          Remove
+                        </Button>
                       </div>
                     </div>
-                    <div className="text-sm text-gray-500">
-                      {item.availability?.status}
-                    </div>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-500">Qty. {item.quantity}</span>
-                    <span
-                      className="text-blue-500 cursor-pointer"
-                      onClick={() => removeItem(wixClient, item._id!)}
-                    >
-                      Remove
-                    </span>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-          <div className="">
-            <div className="flex items-center justify-between font-semibold">
-              <span className="">Subtotal</span>
-              {/* <span className="">${cart.subtotal.amount}</span> */}
+              ))}
             </div>
-            <p className="text-gray-500 text-sm mt-2 mb-4 text-center">
-              Shipping and taxes calculated at checkout.
-            </p>
-            <div className="flex justify-between text-sm">
-              <button className="rounded-md py-3 px-4 ring-1 ring-gray-300">
-                View Cart
-              </button>
-              <button
-                className="rounded-md py-3 px-4 bg-black text-white disabled:cursor-not-allowed disabled:opacity-75"
-                disabled={isLoading}
-                onClick={handleCheckout}
-              >
-                Checkout
-              </button>
-            </div>
+          )}
+        </ScrollArea>
+        <div className="p-4 sm:p-6 border-t">
+          <div className="flex items-center justify-between font-semibold mb-4">
+            <span>Subtotal</span>
+            <span>R{cart.subtotal?.amount || 0}</span>
           </div>
-        </>
-      )}
+          <p className="text-gray-500 text-sm mb-4 text-center">
+            Shipping and taxes calculated at checkout.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
+            <Button variant="outline" className="w-full" onClick={onClose}>
+              Close Cart
+            </Button>
+            <Button
+              className="w-full"
+              disabled={isLoading || !cart.lineItems || cart.lineItems.length === 0}
+              onClick={handleCheckout}
+            >
+              Checkout
+            </Button>
+          </div>
+        </div>
+      </div>
     </div>
-  );
-};
+  )
+}
 
-export default CartModal;
+export default CartModal
 
 
 
