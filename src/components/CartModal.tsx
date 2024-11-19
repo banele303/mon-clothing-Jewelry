@@ -193,26 +193,26 @@ const CartModal = ({ onClose }: CartModalProps) => {
   );
 };
 
-const ParentComponent = () => {
-  const [isCartOpen, setIsCartOpen] = useState(false);
+// const ParentComponent = () => {
+//   const [isCartOpen, setIsCartOpen] = useState(false);
 
-  const handleOpenCart = () => {
-    setIsCartOpen(true);
-  };
+//   const handleOpenCart = () => {
+//     setIsCartOpen(true);
+//   };
 
-  const handleCloseCart = () => {
-    setIsCartOpen(false);
-  };
+//   const handleCloseCart = () => {
+//     setIsCartOpen(false);
+//   };
 
-  return (
-    <div>
-      <button onClick={handleOpenCart}>Open Cart</button>
-      {isCartOpen && <CartModal onClose={handleCloseCart} />}
-    </div>
-  );
-};
+//   return (
+//     <div>
+//       <button onClick={handleOpenCart}>Open Cart</button>
+//       {isCartOpen && <CartModal onClose={handleCloseCart} />}
+//     </div>
+//   );
+// };
 
-export default ParentComponent;
+// export default ParentComponent;
 
 
     
