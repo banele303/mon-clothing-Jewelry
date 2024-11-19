@@ -46,14 +46,14 @@ export default function LoginPage() {
 
   const formTitle = {
     [MODE.LOGIN]: "Log in",
-    [MODE.REGISTER]: "Register",
+    [MODE.REGISTER]: "Sign up",
     [MODE.RESET_PASSWORD]: "Reset Your Password",
     [MODE.EMAIL_VERIFICATION]: "Verify Your Email",
   }[mode];
 
   const buttonTitle = {
-    [MODE.LOGIN]: "Login",
-    [MODE.REGISTER]: "Register",
+    [MODE.LOGIN]: "Log In",
+    [MODE.REGISTER]: "Sign Up",
     [MODE.RESET_PASSWORD]: "Reset",
     [MODE.EMAIL_VERIFICATION]: "Verify",
   }[mode];
@@ -77,7 +77,10 @@ export default function LoginPage() {
             password,
             profile: { nickname: username },
           });
-          break;
+          setMessage("Account created successfully! Please log in.");
+          setMode(MODE.LOGIN);
+          setIsLoading(false);
+          return;
         case MODE.RESET_PASSWORD:
           await wixClient.auth.sendPasswordResetEmail(email, window.location.href);
           setMessage("Password reset email sent. Please check your e-mail.");
@@ -249,7 +252,7 @@ export default function LoginPage() {
               {isLoading ? (
                 <span className="flex items-center">
                   <svg
-                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                    className="animate-spin h-5 w-5 text-white mr-2"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
@@ -282,10 +285,27 @@ export default function LoginPage() {
         {message && (
           <div className="text-green-600 text-sm text-center mt-4">{message}</div>
         )}
+        <div className="mt-4 text-center">
+          <button
+            onClick={() => {
+              setError("");
+              setMessage("");
+              setMode((prev) =>
+                prev === MODE.LOGIN ? MODE.REGISTER : MODE.LOGIN
+              );
+            }}
+            className="text-indigo-600 hover:underline"
+          >
+            {mode === MODE.LOGIN
+              ? "Don't have an account? Sign up"
+              : "Already have an account? Log in"}
+          </button>
+        </div>
       </div>
     </div>
   );
 }
+
 
 
 
