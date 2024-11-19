@@ -8,9 +8,41 @@ import { useWixClient } from "@/hooks/useWixClient";
 import { currentCart } from "@wix/ecom";
 import { X } from "lucide-react";
 
-const CartModal = ({ onClose }: { onClose: () => void }) => {
+interface Price {
+  amount: number;
+}
+
+interface Subtotal {
+  amount: number;
+}
+
+interface LineItem {
+  _id: string;
+  image?: string;
+  productName?: { original: string };
+  physicalProperties?: { sku: string };
+  price?: Price;
+  quantity?: number;
+}
+
+interface Cart {
+  lineItems: LineItem[];
+  subtotal?: Subtotal;
+}
+
+interface CartStore {
+  cart: Cart;
+  isLoading: boolean;
+  removeItem: (client: any, id: string) => void;
+}
+
+interface CartModalProps {
+  onClose: () => void;
+}
+
+const CartModal = ({ onClose }: CartModalProps) => {
   const wixClient = useWixClient();
-  const { cart, isLoading, removeItem } = useCartStore();
+  const { cart, isLoading, removeItem } = useCartStore() as CartStore;
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -162,6 +194,7 @@ const CartModal = ({ onClose }: { onClose: () => void }) => {
 };
 
 export default CartModal;
+
 
     
 
