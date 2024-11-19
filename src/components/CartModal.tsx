@@ -11,9 +11,21 @@ import { X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 
+interface CartItem extends currentCart.LineItem {
+  _id: string
+  image?: { url: string }
+  productName?: { original: string }
+  price?: { amount: number }
+}
+
+interface Cart extends currentCart.Cart {
+  lineItems: CartItem[]
+  subtotal?: { amount: number }
+}
+
 const CartModal = ({ onClose }: { onClose: () => void }) => {
   const wixClient = useWixClient()
-  const { cart, isLoading, removeItem } = useCartStore()
+  const { cart, isLoading, removeItem } = useCartStore() as { cart: Cart; isLoading: boolean; removeItem: (wixClient: any, itemId: string) => Promise<void> }
   const modalRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -47,8 +59,15 @@ const CartModal = ({ onClose }: { onClose: () => void }) => {
         window.location.href = redirectSession.fullUrl
       }
     } catch (err) {
-      console.log(err)
+      console.error('Checkout error:', err)
     }
+  }
+
+  const getSubtotal = () => {
+    if (cart.subtotal?.amount) {
+      return cart.subtotal.amount
+    }
+    return cart.lineItems.reduce((total, item) => total + (item.price?.amount || 0) * (item.quantity || 1), 0)
   }
 
   return (
@@ -74,7 +93,7 @@ const CartModal = ({ onClose }: { onClose: () => void }) => {
                   {item.image && (
                     <Image
                       src={wixMedia.getScaledToFillImageUrl(item.image, 72, 96, {})}
-                      alt=""
+                      alt={item.productName?.original || 'Product image'}
                       width={72}
                       height={96}
                       className="object-cover rounded-md"
@@ -88,11 +107,12 @@ const CartModal = ({ onClose }: { onClose: () => void }) => {
                     <div className="flex justify-between items-center mt-2">
                       <span className="text-sm text-gray-500">Qty. {item.quantity}</span>
                       <div className="flex items-center gap-2">
-                        <span className="font-semibold">R{item.price?.amount}</span>
+                        <span className="font-semibold">R{item.price?.amount || 0}</span>
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => removeItem(wixClient, item._id!)}
+                          onClick={() => removeItem(wixClient, item._id)}
+                          disabled={isLoading}
                         >
                           Remove
                         </Button>
@@ -107,7 +127,7 @@ const CartModal = ({ onClose }: { onClose: () => void }) => {
         <div className="p-4 sm:p-6 border-t">
           <div className="flex items-center justify-between font-semibold mb-4">
             <span>Subtotal</span>
-            <span>R{cart.subtotal?.amount || 0}</span>
+            <span>R{getSubtotal()}</span>
           </div>
           <p className="text-gray-500 text-sm mb-4 text-center">
             Shipping and taxes calculated at checkout.
