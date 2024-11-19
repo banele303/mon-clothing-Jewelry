@@ -31,7 +31,7 @@ export default function LoginPage() {
       try {
         const isLoggedIn = await wixClient.auth.loggedIn();
         if (isLoggedIn) {
-          router.push("/"); // Ensure this route exists
+          router.push("/");
         }
       } catch (error) {
         console.error("Error checking login status:", error);
@@ -92,15 +92,11 @@ export default function LoginPage() {
           throw new Error("Invalid mode");
       }
 
-      console.log("Login Response:", response);
-
       if (response?.loginState === LoginState.SUCCESS) {
         setMessage("Successful! Redirecting...");
         const tokens = await wixClient.auth.getMemberTokensForDirectLogin(
           response.data.sessionToken!
         );
-
-        console.log("Tokens:", tokens);
 
         if (tokens && tokens.refreshToken) {
           Cookies.set("refreshToken", JSON.stringify(tokens.refreshToken), {
@@ -157,69 +153,140 @@ export default function LoginPage() {
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm -space-y-px">
             {mode === MODE.REGISTER && (
-              <input
-                id="username"
-                name="username"
-                type="text"
-                required
-                autoComplete="username"
-                placeholder="Username"
-                className="input"
-                onChange={(e) => setUsername(e.target.value)}
-              />
+              <div>
+                <label htmlFor="username" className="sr-only">
+                  Username
+                </label>
+                <input
+                  id="username"
+                  name="username"
+                  type="text"
+                  required
+                  autoComplete="username"
+                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                  placeholder="Username"
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+              </div>
             )}
             {mode !== MODE.EMAIL_VERIFICATION && (
-              <input
-                id="email-address"
-                name="email"
-                type="email"
-                required
-                autoComplete="email"
-                placeholder="Email address"
-                className="input"
-                onChange={(e) => setEmail(e.target.value)}
-              />
+              <div>
+                <label htmlFor="email-address" className="sr-only">
+                  Email address
+                </label>
+                <input
+                  id="email-address"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                  placeholder="Email address"
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
             )}
             {mode === MODE.EMAIL_VERIFICATION ? (
-              <input
-                id="verification-code"
-                name="verification-code"
-                type="text"
-                required
-                autoComplete="one-time-code"
-                placeholder="Verification Code"
-                className="input"
-                onChange={(e) => setEmailCode(e.target.value)}
-              />
+              <div>
+                <label htmlFor="verification-code" className="sr-only">
+                  Verification Code
+                </label>
+                <input
+                  id="verification-code"
+                  name="verification-code"
+                  type="text"
+                  autoComplete="one-time-code"
+                  required
+                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                  placeholder="Verification Code"
+                  onChange={(e) => setEmailCode(e.target.value)}
+                />
+              </div>
             ) : (
               (mode === MODE.LOGIN || mode === MODE.REGISTER) && (
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  required
-                  autoComplete="current-password"
-                  placeholder="Password"
-                  className="input"
-                  onChange={(e) => setPassword(e.target.value)}
-                />
+                <div>
+                  <label htmlFor="password" className="sr-only">
+                    Password
+                  </label>
+                  <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    autoComplete="current-password"
+                    required
+                    className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                    placeholder="Password"
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </div>
               )
             )}
           </div>
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="button"
-          >
-            {isLoading ? "Loading..." : buttonTitle}
-          </button>
+
+          <div className="flex items-center justify-between">
+            {mode === MODE.LOGIN && (
+              <div className="text-sm">
+                <a
+                  href="#"
+                  className="font-medium text-indigo-600 hover:text-indigo-500"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setMode(MODE.RESET_PASSWORD);
+                  }}
+                >
+                  Forgot your password?
+                </a>
+              </div>
+            )}
+          </div>
+
+          <div>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-400"
+            >
+              {isLoading ? (
+                <span className="flex items-center">
+                  <svg
+                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                    />
+                  </svg>
+                  Loading...
+                </span>
+              ) : (
+                buttonTitle
+              )}
+            </button>
+          </div>
         </form>
-        {error && <div className="error">{error}</div>}
-        {message && <div className="message">{message}</div>}
+        {error && (
+          <div className="text-red-600 text-sm text-center mt-4">{error}</div>
+        )}
+        {message && (
+          <div className="text-green-600 text-sm text-center mt-4">{message}</div>
+        )}
       </div>
     </div>
   );
 }
+
 
 
 // "use client";
