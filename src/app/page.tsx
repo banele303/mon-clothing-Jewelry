@@ -37,8 +37,8 @@ const HomePage = async () => {
   return (
     <div className="">
       <Slider />
-      <div className="mt-[-24] md:mt-23 px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64">
-        <h1 className="text-2xl extratext-bold p-4 text-white py-3 px-5 bg-black">Featured Products</h1>
+      <div className="mt-10 md:mt-23 px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64">
+        <h1 className="text-2xl extratext-bold p-4 text-white py-3 px-5 bg-black rounded-md text-center">Featured Products</h1>
         <Suspense fallback={<Skeleton />}>
           <ProductList
             categoryId={process.env.FEATURED_PRODUCTS_FEATURED_CATEGORY_ID!}
