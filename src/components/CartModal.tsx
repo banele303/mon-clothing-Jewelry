@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { useCartStore } from "@/hooks/useCartStore";
 import { media as wixMedia } from "@wix/sdk";
@@ -193,8 +193,26 @@ const CartModal = ({ onClose }: CartModalProps) => {
   );
 };
 
-export default CartModal;
+const ParentComponent = () => {
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
+  const handleOpenCart = () => {
+    setIsCartOpen(true);
+  };
+
+  const handleCloseCart = () => {
+    setIsCartOpen(false);
+  };
+
+  return (
+    <div>
+      <button onClick={handleOpenCart}>Open Cart</button>
+      {isCartOpen && <CartModal onClose={handleCloseCart} />}
+    </div>
+  );
+};
+
+export default ParentComponent;
 
 
     
