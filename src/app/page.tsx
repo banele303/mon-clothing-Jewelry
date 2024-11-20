@@ -34,7 +34,7 @@ const HomePage = async () => {
   return (
     <div className="">
       <Slider />
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-start px-[rem] mt-10 my-[3rem]">
         <div className="prose prose-slate max-w-none">
           <h1 className="text-3xl sm:text-4xl font-serif mb-6 text-gray-900">MON CLOTHING & JEWELLERY</h1>
           <p className="text-base sm:text-lg leading-relaxed text-gray-700 mb-4">
@@ -54,21 +54,13 @@ const HomePage = async () => {
               src="/owner.jpg"
               fill
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              className="object-contain"
+              className="object-contain rounded-[8px]"
               priority
             />
           </div>
         </div>
       </div>
-      <div className="relative w-full aspect-[3/4] sm:aspect-[4/5] md:aspect-[3/4] lg:aspect-square">
-        <Image
-          alt="MON Jewellery craftsmanship"
-          src="/owner.jpg"
-          fill
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          className="object-cover rounded-md"
-        />
-      </div>
+      
       <div className="mt-10 md:mt-23 px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64">
         <h1 className="text-2xl extratext-bold p-4 text-white py-3 px-5 bg-black rounded-md text-center">Featured Products</h1>
         <Suspense fallback={<Skeleton />}>
