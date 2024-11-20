@@ -25,7 +25,7 @@ const Navbar = () => {
       {/* MOBILE */}
       <div className="h-full flex items-center justify-between md:hidden">
         <Link href="/">
-        <Image src="/logo.jpg" alt="" width={94} height={94} />
+        <Image src="/logo.jpg" alt="" width={124} height={124} />
             <div className="text-xl tracking-wide hidden md:flex">MON </div>
         
         </Link>
