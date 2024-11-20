@@ -4,6 +4,7 @@ import CategoryList from "@/components/CategoryList";
 import ProductList from "@/components/ProductList";
 import Skeleton from "@/components/Skeleton";
 import Slider from "@/components/Slider";
+import Image from "next/image"
 import { WixClientContext } from "@/context/wixContext";
 import { useWixClient } from "@/hooks/useWixClient";
 import { wixClientServer } from "@/lib/wixClientServer";
@@ -37,7 +38,7 @@ const HomePage = async () => {
   return (
     <div className="">
       <Slider />
-<div className="grid grid-cols-1 sm:grid-cols-2 gap-8 md:gap-12 items-start">
+<div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-start">
         <div className="prose prose-slate max-w-none">
           <h1 className="text-3xl sm:text-4xl font-serif mb-6 text-gray-900">MON CLOTHING & JEWELLERY</h1>
           
@@ -53,6 +54,21 @@ const HomePage = async () => {
             At MON, we create jewellery for women who cherish both style and substance, knowing that their inner sparkle adds brilliance to any piece they wear.
           </p>
         </div>
+        
+        <div className="flex justify-center items-center">
+          <div className="relative w-full max-w-md aspect-[3/4]">
+            <Image
+              alt="MON Jewellery craftsmanship"
+              src="/owner.jpg"
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              className="object-contain"
+              priority
+            />
+          </div>
+        </div>
+      </div>
+
         
         <div className="relative w-full aspect-[3/4] sm:aspect-[4/5] md:aspect-[3/4] lg:aspect-square">
           <Image
