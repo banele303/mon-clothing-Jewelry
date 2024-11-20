@@ -78,7 +78,7 @@ export default function ModernSlider() {
               </Link>
             </div>
             {/* IMAGE CONTAINER */}
-            <div className="w-full md:w-1/2 h-1/2 md:h-1/2 relative overflow-hidden px-[2rem] rounded-md">
+            <div className="w-full md:w-1/2 h-1/2 md:h-full relative overflow-hidden px-[2rem] rounded-md">
               <Image
                 src={slide.img}
                 alt={slide.title}
