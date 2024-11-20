@@ -35,8 +35,8 @@ const HomePage = async () => {
     <div className="">
       <Slider />
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-start px-[rem] mt-10 my-[3rem]">
-        <div className="prose prose-slate max-w-none">
-          <h1 className="text-3xl sm:text-4xl font-serif mb-6 text-gray-900">MON CLOTHING & JEWELLERY</h1>
+        <div className="prose prose-slate max-w-none px-[2rem]">
+          <h1 className="text-3xl sm:text-4xl font-serif mb-6 text-gray-900 p-3 ">MON CLOTHING & JEWELLERY</h1>
           <p className="text-base sm:text-lg leading-relaxed text-gray-700 mb-4">
             MON was born from the boundless creativity and curiosity of a young girl who found joy in crafting necklaces and earrings from beads. What began as a simple childhood passion has blossomed into a celebration of elegance and legacy.
           </p>
@@ -53,8 +53,8 @@ const HomePage = async () => {
               alt="MON Jewellery craftsmanship"
               src="/owner.jpg"
               fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              className="object-contain rounded-[8px]"
+              sizes="(max-width: 748px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              className="object-contain rounded-md"
               priority
             />
           </div>
