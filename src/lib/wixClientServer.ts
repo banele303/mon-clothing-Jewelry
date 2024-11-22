@@ -35,3 +35,7 @@ export const wixClientServer = async () => {
 
   return wixClient;
 };
+
+
+
+
