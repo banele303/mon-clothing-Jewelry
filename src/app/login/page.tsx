@@ -113,7 +113,7 @@ export default function LoginPage() {
           throw new Error("Token retrieval failed");
         }
       } else if (response?.loginState === LoginState.FAILURE) {
-        handleError(response.errorCode);
+        handleError(response.errorCode ?? "unknown");
       } else if (response?.loginState === LoginState.EMAIL_VERIFICATION_REQUIRED) {
         setMode(MODE.EMAIL_VERIFICATION);
         setMessage("Email verification required. Check your email for the code.");
@@ -147,7 +147,8 @@ export default function LoginPage() {
 
   const handleLogout = async () => {
     try {
-      await wixClient.auth.logout();
+      const currentUrl = typeof window !== 'undefined' ? window.location.href : '/';
+      await wixClient.auth.logout(currentUrl);
       Cookies.remove("refreshToken");
       router.push("/login");
     } catch (error) {
@@ -306,6 +307,7 @@ export default function LoginPage() {
     </div>
   );
 }
+
 
 
 
