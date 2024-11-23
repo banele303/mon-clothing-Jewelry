@@ -1,5 +1,7 @@
 "use client";
-
+import Image from "next/image";
+import Link from "next/link";
+import CartModal from "./CartModal";
 import { createClient, OAuthStrategy } from "@wix/sdk";
 import { products, collections } from "@wix/stores";
 import { currentCart } from "@wix/ecom";
