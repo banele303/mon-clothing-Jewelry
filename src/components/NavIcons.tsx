@@ -28,17 +28,11 @@ const NavIcons = () => {
   }, [wixClient]);
 
   useEffect(() => {
-    const fetchCart = async () => {
-      if (wixClient) {
-        try {
-          await getCart(wixClient);
-        } catch (error) {
-          console.error("Error fetching cart:", error);
-        }
-      }
-    };
-
-    fetchCart();
+    if (wixClient) {
+      getCart(wixClient).catch(error => {
+        console.error("Error fetching cart:", error);
+      });
+    }
   }, [wixClient, getCart]);
 
   const handleOpenCart = () => {
@@ -113,6 +107,7 @@ const NavIcons = () => {
 };
 
 export default NavIcons;
+
 
 
 
