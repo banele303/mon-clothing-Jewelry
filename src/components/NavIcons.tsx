@@ -6,8 +6,8 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import CartModal from "./CartModal";
 import { useWixClient } from "@/hooks/useWixClient";
+import Cookies from "js-cookie";
 import { useCartStore } from "@/hooks/useCartStore";
-import cookies from "next-cookies";
 
 const NavIcons = ({ initialRefreshToken }) => {
   const [isCartOpen, setIsCartOpen] = useState(false);
