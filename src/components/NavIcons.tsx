@@ -30,7 +30,7 @@ const NavIcons = () => {
 
   useEffect(() => {
     if (wixClient) {
-      getCart(wixClient).catch(error => {
+      getCart(wixClient).catch((error) => {
         console.error("Error fetching cart:", error);
       });
     }
@@ -40,7 +40,7 @@ const NavIcons = () => {
     setIsCartOpen(true);
   };
 
-  const handleCloseCart = () => {    
+  const handleCloseCart = () => {
     setIsCartOpen(false);
   };
 
