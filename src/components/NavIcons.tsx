@@ -9,11 +9,7 @@ import { useWixClient } from "@/hooks/useWixClient";
 import Cookies from "js-cookie";
 import { useCartStore } from "@/hooks/useCartStore";
 
-interface NavIconsProps {
-  initialRefreshToken: string;
-}
-
-const NavIcons = ({ initialRefreshToken }: NavIconsProps) => {
+const NavIcons = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -23,7 +19,7 @@ const NavIcons = ({ initialRefreshToken }: NavIconsProps) => {
   const pathName = usePathname();
 
   const wixClient = useWixClient();
-  const { cart, counter, getCart } = useCartStore();
+  const { cart, counter, getCart, initialRefreshToken, setInitialRefreshToken } = useCartStore();
 
   useEffect(() => {
     if (wixClient && wixClient.auth) {
@@ -32,12 +28,12 @@ const NavIcons = ({ initialRefreshToken }: NavIconsProps) => {
   }, [wixClient]);
 
   useEffect(() => {
-    if (wixClient) {
+    if (initialRefreshToken) {
       getCart(wixClient).catch(error => {
         console.error("Error fetching cart:", error);
       });
     }
-  }, [wixClient, getCart]);
+  }, [wixClient, getCart, initialRefreshToken]);
 
   const handleOpenCart = () => {
     setIsCartOpen(true);
@@ -111,6 +107,7 @@ const NavIcons = ({ initialRefreshToken }: NavIconsProps) => {
 };
 
 export default NavIcons;
+
 
 
 
