@@ -9,7 +9,11 @@ import { useWixClient } from "@/hooks/useWixClient";
 import Cookies from "js-cookie";
 import { useCartStore } from "@/hooks/useCartStore";
 
-const NavIcons = ({ initialRefreshToken }) => {
+interface NavIconsProps {
+  initialRefreshToken: string;
+}
+
+const NavIcons = ({ initialRefreshToken }: NavIconsProps) => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -107,6 +111,7 @@ const NavIcons = ({ initialRefreshToken }) => {
 };
 
 export default NavIcons;
+
 
 
 // "use client";
