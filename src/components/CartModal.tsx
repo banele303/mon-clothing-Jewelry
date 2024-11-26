@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useRef } from "react";
@@ -166,6 +167,8 @@ const CartModal = ({ onClose }: CartModalProps) => {
 };
 
 export default CartModal;
+
+
 
 
 
