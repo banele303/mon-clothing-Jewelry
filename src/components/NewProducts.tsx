@@ -98,7 +98,7 @@ const NewProduct = async ({
               <div className="relative h-64 w-full overflow-hidden rounded-md bg-gray-200">
                 <Image
                   src={product.media?.mainMedia?.image?.url || "/product.png"}
-                  alt={product.name}
+                  alt="new products"
                   layout="fill"
                   objectFit="cover"
                   className="group-hover:opacity-75 transition duration-300"
