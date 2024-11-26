@@ -63,7 +63,7 @@ const Add = ({
         <button
           onClick={() => addItem(wixClient, productId, variantId, quantity)}
           disabled={isLoading}
-          className="w-34 md:w-36 text-[15px] rounded-md ring-1 ring-lama text-lama py-2 px-2 hover:bg-lama hover:text-white disabled:cursor-not-allowed disabled:bg-pink-200 disabled:ring-0 disabled:text-white disabled:ring-none"
+          className="w-36 text-[14px] rounded-md ring-1 ring-lama text-lama py-2 px-2 hover:bg-lama hover:text-white disabled:cursor-not-allowed disabled:bg-pink-200 disabled:ring-0 disabled:text-white disabled:ring-none"
         >
           Add to Cart
         </button>
