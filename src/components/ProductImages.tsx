@@ -27,7 +27,7 @@ const ProductImages = ({ items }: { items: any }) => {
 
   return (
     <div className="">
-      <div className="h-[500px] relative">
+      <div className="maxh-[250px] md:h-[500px] relative">
         <Image
           src={items[index].image?.url}
           alt=""
