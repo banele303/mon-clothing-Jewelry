@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useRef } from "react";
@@ -56,7 +55,7 @@ const CartModal = ({ onClose }: CartModalProps) => {
   };
 
   const getSubtotal = () => {
-    if ("subtotal" in cart && cart.subtotal?.amount) {
+    if (cart.subtotal?.amount) {
       return Number(cart.subtotal.amount).toFixed(2);
     }
     return cart.lineItems
@@ -167,6 +166,8 @@ const CartModal = ({ onClose }: CartModalProps) => {
 };
 
 export default CartModal;
+
+
 
 
 
