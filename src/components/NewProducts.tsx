@@ -15,7 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { MapPin, Menu, Search, ShoppingCart, User } from 'lucide-react';
 
-const PRODUCT_PER_PAGE = 4;
+const PRODUCT_PER_PAGE = 10;
 
 const NewProducts = async ({
   categoryId,
