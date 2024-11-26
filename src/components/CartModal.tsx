@@ -58,7 +58,7 @@ const CartModal = ({ onClose }: CartModalProps) => {
     if (cart.subtotal?.amount !== undefined) {
       return Number(cart.subtotal.amount).toFixed(2);
     }
-    return cart.lineItems
+    return (cart.lineItems || [])
       .reduce(
         (total, item) =>
           total + (Number(item.price?.amount) || 0) * (item.quantity || 1),
@@ -166,6 +166,8 @@ const CartModal = ({ onClose }: CartModalProps) => {
 };
 
 export default CartModal;
+
+
 
 
 
