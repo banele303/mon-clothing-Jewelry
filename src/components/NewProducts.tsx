@@ -17,7 +17,7 @@ import { MapPin, Menu, Search, ShoppingCart, User } from 'lucide-react';
 
 const PRODUCT_PER_PAGE = 4;
 
-const NewProduct = async ({
+const NewProducts = async ({
   categoryId,
   limit,
   searchParams,
