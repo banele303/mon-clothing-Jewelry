@@ -21,6 +21,14 @@ type CartState = {
   removeItem: (wixClient: WixClient, itemId: string) => Promise<void>;
 };
 
+const calculateSubtotal = (lineItems: currentCart.LineItem[]): number => {
+  return lineItems.reduce((total, item) => {
+    const itemPrice = Number(item.price?.amount) || 0;
+    const itemQuantity = Number(item.quantity) || 0;
+    return total + itemPrice * itemQuantity;
+  }, 0);
+};
+
 export const useCartStore = create<CartState>()(
   persist(
     (set, get) => ({
@@ -30,14 +38,11 @@ export const useCartStore = create<CartState>()(
       getCart: async (wixClient) => {
         try {
           const cart = await wixClient.currentCart.getCurrentCart();
-          const subtotal = cart?.lineItems.reduce(
-            (total, item) => total + (item.price?.amount || 0) * (item.quantity || 1),
-            0
-          );
+          const subtotal = cart?.lineItems ? calculateSubtotal(cart.lineItems) : 0;
           set({
             cart: { ...cart, subtotal: { amount: subtotal } },
             isLoading: false,
-            counter: cart?.lineItems.length || 0,
+            counter: cart?.lineItems?.length || 0,
           });
         } catch (err) {
           set((prev) => ({ ...prev, isLoading: false }));
@@ -60,14 +65,11 @@ export const useCartStore = create<CartState>()(
             ],
           });
 
-          const subtotal = response.cart?.lineItems.reduce(
-            (total, item) => total + (item.price?.amount || 0) * (item.quantity || 1),
-            0
-          );
+          const subtotal = response.cart?.lineItems ? calculateSubtotal(response.cart.lineItems) : 0;
 
           set({
             cart: { ...response.cart, subtotal: { amount: subtotal } },
-            counter: response.cart?.lineItems.length || 0,
+            counter: response.cart?.lineItems?.length || 0,
             isLoading: false,
           });
         } catch (err) {
@@ -82,14 +84,11 @@ export const useCartStore = create<CartState>()(
             [itemId]
           );
 
-          const subtotal = response.cart?.lineItems.reduce(
-            (total, item) => total + (item.price?.amount || 0) * (item.quantity || 1),
-            0
-          );
+          const subtotal = response.cart?.lineItems ? calculateSubtotal(response.cart.lineItems) : 0;
 
           set({
             cart: { ...response.cart, subtotal: { amount: subtotal } },
-            counter: response.cart?.lineItems.length || 0,
+            counter: response.cart?.lineItems?.length || 0,
             isLoading: false,
           });
         } catch (err) {
@@ -104,6 +103,7 @@ export const useCartStore = create<CartState>()(
     }
   )
 );
+
 
 
 
