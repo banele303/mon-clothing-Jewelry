@@ -1,4 +1,3 @@
-
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { currentCart } from "@wix/ecom";
@@ -21,14 +20,14 @@ type CartState = {
 export const useCartStore = create<CartState>()(
   persist(
     (set, get) => ({
-      cart: { lineItems: [] },
+      cart: { lineItems: [], subtotal: { amount: 0 } },
       isLoading: false,
       counter: 0,
       getCart: async (wixClient) => {
         try {
           const cart = await wixClient.currentCart.getCurrentCart();
           set({
-            cart: cart || { lineItems: [] },
+            cart: cart || { lineItems: [], subtotal: { amount: 0 } },
             isLoading: false,
             counter: cart?.lineItems.length || 0,
           });
@@ -87,6 +86,8 @@ export const useCartStore = create<CartState>()(
     }
   )
 );
+
+
 
 
 
