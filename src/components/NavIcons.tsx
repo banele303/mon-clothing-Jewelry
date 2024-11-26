@@ -26,13 +26,8 @@ const NavIcons: React.FC<NavIconsProps> = ({ onCartClick }) => {
 
   useEffect(() => {
     setIsClient(true);
-    if (!isLoggedIn) {
-      Cookies.remove("refreshToken");
-      router.push("/login");
-    } else {
-      getCart(wixClient);
-    }
-  }, [wixClient, getCart, isLoggedIn, router]);
+    getCart(wixClient);
+  }, [wixClient, getCart]);
 
   if (!isClient) {
     return null;
@@ -65,7 +60,7 @@ const NavIcons: React.FC<NavIconsProps> = ({ onCartClick }) => {
         className="cursor-pointer"
         onClick={handleProfile}
       />
-      {isProfileOpen && (
+      {isProfileOpen && isLoggedIn && (
         <div className="absolute p-4 rounded-md top-12 left-0 bg-white text-sm shadow-[0_3px_10px_rgb(0,0,0,0.2)] z-20">
           <Link href="/profile">Profile</Link>
           <div className="mt-2 cursor-pointer" onClick={handleLogout}>
@@ -97,6 +92,8 @@ const NavIcons: React.FC<NavIconsProps> = ({ onCartClick }) => {
 };
 
 export default NavIcons;
+
+
 
 
 
