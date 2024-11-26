@@ -22,10 +22,22 @@ import Image from "next/image";
 import SearchBar from "./SearchBar";
 import dynamic from "next/dynamic";
 import MenuPhone from "./Menu";
-
+import CartModal from "./CartModal";
 const NavIcons = dynamic(() => import("./NavIcons"), { ssr: false });
 
 const Navbar = () => {
+  
+ const [isCartOpen, setIsCartOpen] = useState(false);
+
+  const handleCartClick = () => {
+    setIsCartOpen(true);
+  };
+
+  const handleCloseCart = () => {
+    setIsCartOpen(false);
+  };
+
+  
   return (
     <div className="h-20 px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64 relative">
       {/* MOBILE */}
@@ -64,7 +76,12 @@ const Navbar = () => {
         {/* RIGHT */}
         <div className="w-2/3 xl:w-1/2 flex items-center justify-between gap-8 md:pl-[3rem]">
           <SearchBar />
-          <NavIcons />
+          <div className="flex items-center">
+            <NavIcons onCartClick={handleCartClick} />
+          </div>
+        </div>
+      </div>
+      {isCartOpen && <CartModal onClose={handleCloseCart} />}
         </div>
       </div>
     </div>
