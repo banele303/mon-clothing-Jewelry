@@ -3,8 +3,12 @@ import { persist } from "zustand/middleware";
 import { currentCart } from "@wix/ecom";
 import { WixClient } from "@/context/wixContext";
 
+type ExtendedCart = currentCart.Cart & {
+  subtotal?: { amount: number };
+};
+
 type CartState = {
-  cart: currentCart.Cart;
+  cart: ExtendedCart;
   isLoading: boolean;
   counter: number;
   getCart: (wixClient: WixClient) => Promise<void>;
@@ -20,14 +24,18 @@ type CartState = {
 export const useCartStore = create<CartState>()(
   persist(
     (set, get) => ({
-      cart: { lineItems: [], subtotal: { amount: 0 } },
+      cart: { lineItems: [] },
       isLoading: false,
       counter: 0,
       getCart: async (wixClient) => {
         try {
           const cart = await wixClient.currentCart.getCurrentCart();
+          const subtotal = cart?.lineItems.reduce(
+            (total, item) => total + (item.price?.amount || 0) * (item.quantity || 1),
+            0
+          );
           set({
-            cart: cart || { lineItems: [], subtotal: { amount: 0 } },
+            cart: { ...cart, subtotal: { amount: subtotal } },
             isLoading: false,
             counter: cart?.lineItems.length || 0,
           });
@@ -52,8 +60,13 @@ export const useCartStore = create<CartState>()(
             ],
           });
 
+          const subtotal = response.cart?.lineItems.reduce(
+            (total, item) => total + (item.price?.amount || 0) * (item.quantity || 1),
+            0
+          );
+
           set({
-            cart: response.cart,
+            cart: { ...response.cart, subtotal: { amount: subtotal } },
             counter: response.cart?.lineItems.length || 0,
             isLoading: false,
           });
@@ -69,8 +82,13 @@ export const useCartStore = create<CartState>()(
             [itemId]
           );
 
+          const subtotal = response.cart?.lineItems.reduce(
+            (total, item) => total + (item.price?.amount || 0) * (item.quantity || 1),
+            0
+          );
+
           set({
-            cart: response.cart,
+            cart: { ...response.cart, subtotal: { amount: subtotal } },
             counter: response.cart?.lineItems.length || 0,
             isLoading: false,
           });
@@ -86,7 +104,6 @@ export const useCartStore = create<CartState>()(
     }
   )
 );
-
 
 
 
