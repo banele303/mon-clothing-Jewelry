@@ -60,37 +60,10 @@ const NewProducts = async ({
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <header className="py-4 border-b shadow-sm">
-        <div className="container mx-auto flex justify-between items-center px-4">
-          <div className="text-2xl font-bold">Shop</div>
-          <span className="text-gray-600">112 items</span>
-        </div>
-      </header>
-
-      <nav className="bg-white py-3 shadow">
-        <div className="container mx-auto flex space-x-4 px-4">
-          <Button variant="ghost">All</Button>
-          <Button variant="ghost">Earrings</Button>
-          <Button variant="ghost">Bracelets</Button>
-          <Button variant="ghost">Necklaces</Button>
-        </div>
-      </nav>
+     
 
       <main className="container mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-6">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline">Sort By</Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem>Newest</DropdownMenuItem>
-              <DropdownMenuItem>Price: Low to High</DropdownMenuItem>
-              <DropdownMenuItem>Price: High to Low</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          <Button variant="outline">Filter</Button>
-        </div>
+       
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {res.items.map((product: products.Product) => (
@@ -105,7 +78,7 @@ const NewProducts = async ({
                 />
               </div>
               <div className="mt-2 flex justify-between items-center">
-                <span className="text-lg font-semibold">{product.name}</span>
+{/*                 <span className="text-lg font-semibold">{product.name}</span> */}
                 <span className="text-blue-600 font-semibold">
                   R{product.price?.price}
                 </span>
