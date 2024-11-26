@@ -33,7 +33,7 @@ const Add = ({
       <h4 className="font-medium">Choose a Quantity</h4>
       <div className="flex justify-between">
         <div className="flex items-center gap-4">
-          <div className="bg-gray-100 py-2 px-3 rounded-3xl flex items-center justify-between w-30">
+          <div className="bg-gray-100 py-2 px-3 rounded-3xl flex items-center justify-between w-32">
             <button
               className="cursor-pointer text-xl disabled:cursor-not-allowed disabled:opacity-20"
               onClick={() => handleQuantity("d")}
@@ -63,7 +63,7 @@ const Add = ({
         <button
           onClick={() => addItem(wixClient, productId, variantId, quantity)}
           disabled={isLoading}
-          className="w-34 text-[14px] rounded-md ring-1 ring-lama text-lama py-2 px-1 hover:bg-lama hover:text-white disabled:cursor-not-allowed disabled:bg-pink-200 disabled:ring-0 disabled:text-white disabled:ring-none"
+          className="w-36 text-[14px] rounded-md ring-1 ring-lama text-lama py-2 px-1 hover:bg-lama hover:text-white disabled:cursor-not-allowed disabled:bg-pink-200 disabled:ring-0 disabled:text-white disabled:ring-none"
         >
           Add to Cart
         </button>
