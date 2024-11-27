@@ -80,7 +80,7 @@ export default function NewProducts({ categoryId, limit = PRODUCT_PER_PAGE }: Ne
                   <div className="relative h-48 w-full overflow-hidden">
                     <Image
                       src={product.media?.mainMedia?.image?.url || "/product.png"}
-                      alt={product.name}
+                      alt="mena"
                       layout="fill"
                       objectFit="cover"
                       className="transition-transform duration-300 group-hover:scale-110"
