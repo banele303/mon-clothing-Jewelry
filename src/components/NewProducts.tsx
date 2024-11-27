@@ -72,7 +72,7 @@ export default function NewProducts({ categoryId, limit = PRODUCT_PER_PAGE }: Ne
             <Card 
               key={product._id} 
               className="group relative overflow-hidden transition-all duration-300 hover:shadow-lg"
-              onMouseEnter={() => setHoveredProduct(product._id)}
+              onMouseEnter={() => product._id && setHoveredProduct(product._id)}
               onMouseLeave={() => setHoveredProduct(null)}
             >
               <Link href={`/${product.slug}`}>
@@ -85,7 +85,7 @@ export default function NewProducts({ categoryId, limit = PRODUCT_PER_PAGE }: Ne
                       objectFit="cover"
                       className="transition-transform duration-300 group-hover:scale-110"
                     />
-                    {hoveredProduct === product._id && (
+                    {product._id && hoveredProduct === product._id && (
                       <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         <Button variant="secondary" size="sm" className="mr-2">
                           Quick View
@@ -132,9 +132,6 @@ export default function NewProducts({ categoryId, limit = PRODUCT_PER_PAGE }: Ne
     </div>
   )
 }
-
-
-
 
 
 
