@@ -7,6 +7,7 @@ import Reviews from "@/components/Reviews";
 import { wixClientServer } from "@/lib/wixClientServer";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import Skeleton from "@/components/Skeleton";
 import NewProducts from "@/components/NewProducts";
 
 type Params = Promise<{ slug: string[] }>;
