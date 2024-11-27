@@ -31,6 +31,7 @@ export default async function SinglePage({ params }: { params: Params }) {
   const product = products.items[0];
 
   return (
+    <div>
     <div className="px-4 mt-6 md:px-8 lg:px-16 xl:px-32 2xl:px-64 relative flex flex-col lg:flex-row gap-16">
       {/* IMG */}
       <div className="w-full md:w-1/2 lg:sticky top-20 ">
@@ -83,6 +84,9 @@ export default async function SinglePage({ params }: { params: Params }) {
           <Reviews productId={product._id!} />
         </Suspense>
       </div>
+
+      
+    </div>
  <div className="mt-24 px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64">
         <h1 className="text-2xl text-bold">New Products</h1>
         <Suspense fallback={<Skeleton />}>
