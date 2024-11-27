@@ -12,19 +12,24 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
 import { MapPin, Menu, Search, ShoppingCart, User, Star, Heart } from 'lucide-react'
 import Pagination from "./Pagination"
 import { wixClientServer } from "@/lib/wixClientServer"
+import { products } from "@wix/stores"
 
 const PRODUCT_PER_PAGE = 20
 
-export default function NewProducts({ categoryId, limit = PRODUCT_PER_PAGE }) {
-  const [products, setProducts] = useState([])
+interface NewProductsProps {
+  categoryId: string;
+  limit?: number;
+}
+
+export default function NewProducts({ categoryId, limit = PRODUCT_PER_PAGE }: NewProductsProps) {
+  const [products, setProducts] = useState<products.Product[]>([])
   const [currentPage, setCurrentPage] = useState(0)
   const [hasPrev, setHasPrev] = useState(false)
   const [hasNext, setHasNext] = useState(false)
-  const [hoveredProduct, setHoveredProduct] = useState(null)
+  const [hoveredProduct, setHoveredProduct] = useState<string | null>(null)
 
   useEffect(() => {
     async function fetchProducts() {
@@ -127,6 +132,8 @@ export default function NewProducts({ categoryId, limit = PRODUCT_PER_PAGE }) {
     </div>
   )
 }
+
+
 
 
 
