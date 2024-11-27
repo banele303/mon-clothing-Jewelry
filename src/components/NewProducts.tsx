@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from "next/image"
 import Link from "next/link"
 import DOMPurify from "isomorphic-dompurify"
@@ -15,11 +15,34 @@ import {
 import { Input } from "@/components/ui/input"
 import { MapPin, Menu, Search, ShoppingCart, User, Star, Heart } from 'lucide-react'
 import Pagination from "./Pagination"
+import { wixClientServer } from "@/lib/wixClientServer"
 
 const PRODUCT_PER_PAGE = 20
 
-export default function NewProducts({ products, currentPage, hasPrev, hasNext }) {
+export default function NewProducts({ categoryId, limit = PRODUCT_PER_PAGE }) {
+  const [products, setProducts] = useState([])
+  const [currentPage, setCurrentPage] = useState(0)
+  const [hasPrev, setHasPrev] = useState(false)
+  const [hasNext, setHasNext] = useState(false)
   const [hoveredProduct, setHoveredProduct] = useState(null)
+
+  useEffect(() => {
+    async function fetchProducts() {
+      const wixClient = await wixClientServer()
+      const res = await wixClient.products
+        .queryProducts()
+        .eq("collectionIds", categoryId)
+        .limit(limit)
+        .find()
+
+      setProducts(res.items)
+      setCurrentPage(res.currentPage || 0)
+      setHasPrev(res.hasPrev())
+      setHasNext(res.hasNext())
+    }
+
+    fetchProducts()
+  }, [categoryId, limit])
 
   return (
     <div className="min-h-screen bg-gray-50">
