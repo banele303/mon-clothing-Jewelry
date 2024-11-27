@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import Image from "next/image"
 import Link from "next/link"
-import DOMPurify from "isomorphic-dompurify"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import {
@@ -12,7 +11,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { MapPin, Menu, Search, ShoppingCart, User, Star, Heart } from 'lucide-react'
+import { ShoppingCart, Star, Heart } from 'lucide-react'
 import Pagination from "./Pagination"
 import { wixClientServer } from "@/lib/wixClientServer"
 import { products } from "@wix/stores"
@@ -33,21 +32,31 @@ export default function NewProducts({ categoryId, limit = PRODUCT_PER_PAGE }: Ne
 
   useEffect(() => {
     async function fetchProducts() {
-      const wixClient = await wixClientServer()
-      const res = await wixClient.products
-        .queryProducts()
-        .eq("collectionIds", categoryId)
-        .limit(limit)
-        .find()
+      try {
+        const wixClient = await wixClientServer()
+        const res = await wixClient.products
+          .queryProducts()
+          .eq("collectionIds", categoryId)
+          .limit(limit)
+          .find()
 
-      setProducts(res.items)
-      setCurrentPage(res.currentPage || 0)
-      setHasPrev(res.hasPrev())
-      setHasNext(res.hasNext())
+        setProducts(res.items)
+        setCurrentPage(res.currentPage || 0)
+        setHasPrev(res.hasPrev())
+        setHasNext(res.hasNext())
+      } catch (error) {
+        console.error("Error fetching products:", error)
+        // Handle error state here if needed
+      }
     }
 
     fetchProducts()
   }, [categoryId, limit])
+
+  const formatPrice = (price: number | null | undefined): string => {
+    if (price == null) return 'N/A'
+    return `R${price.toFixed(2)}`
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -79,8 +88,8 @@ export default function NewProducts({ categoryId, limit = PRODUCT_PER_PAGE }: Ne
                 <CardContent className="p-0">
                   <div className="relative h-48 w-full overflow-hidden">
                     <Image
-                      src={product.media?.mainMedia?.image?.url || "/product.png"}
-                      alt="mena"
+                      src={product.media?.mainMedia?.image?.url || "/placeholder.svg"}
+                      alt={product.name || "Product image"}
                       layout="fill"
                       objectFit="cover"
                       className="transition-transform duration-300 group-hover:scale-110"
@@ -100,8 +109,12 @@ export default function NewProducts({ categoryId, limit = PRODUCT_PER_PAGE }: Ne
                   <div className="p-4">
                     <h3 className="text-sm font-medium text-gray-900 truncate">{product.name}</h3>
                     <div className="mt-1 flex items-center">
-                      <span className="text-lg font-bold text-red-600">R{product.price?.price}</span>
-                      <span className="ml-2 text-sm text-gray-500 line-through">R{(product.price?.price * 1.2).toFixed(2)}</span>
+                      <span className="text-lg font-bold text-red-600">{formatPrice(product.price?.price)}</span>
+                      {product.price?.price && (
+                        <span className="ml-2 text-sm text-gray-500 line-through">
+                          {formatPrice(product.price.price * 1.2)}
+                        </span>
+                      )}
                     </div>
                     <div className="mt-1 flex items-center">
                       {[...Array(5)].map((_, i) => (
