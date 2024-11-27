@@ -7,6 +7,7 @@ import Reviews from "@/components/Reviews";
 import { wixClientServer } from "@/lib/wixClientServer";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import NewProducts from "@/components/NewProducts";
 
 type Params = Promise<{ slug: string[] }>;
 
@@ -81,11 +82,21 @@ export default async function SinglePage({ params }: { params: Params }) {
           <Reviews productId={product._id!} />
         </Suspense>
       </div>
+ <div className="mt-24 px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64">
+        <h1 className="text-2xl text-bold">New Products</h1>
+        <Suspense fallback={<Skeleton />}>
+          <NewProducts
+            categoryId={process.env.NEXT_PUBLIC_EARRINGS_ID!}
+            limit={4}
+          />
+        </Suspense>
+      </div>
+      
     </div>
   );
 };
 
-        
+          
 {/*         {product.price?.price === product.price?.discountedPrice ? (
           <h2 className="font-medium text-2xl">R{product.price?.price}</h2>
         ) : (
