@@ -6,3 +6,6 @@ import { useContext } from "react";
 export const useWixClient = () => {
   return useContext(WixClientContext);
 };
+
+
+

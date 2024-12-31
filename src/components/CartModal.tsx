@@ -2,13 +2,17 @@
 
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useCartStore } from "@/hooks/useCartStore";
 import { media as wixMedia } from "@wix/sdk";
 import { useWixClient } from "@/hooks/useWixClient";
 import { currentCart } from "@wix/ecom";
 import { X } from 'lucide-react';
+import { Button } from "@/components/ui/button"
+import PaymentInstructions from "./ui/PaymentInstractions";
+import Link from "next/link";
+
 
 interface CartModalProps {
   onClose: () => void;
@@ -68,7 +72,7 @@ const CartModal = ({ onClose }: CartModalProps) => {
       )
       .toFixed(2);
   };
-
+  const [showInstructions, setShowInstructions] = useState(false)
   // const handleRemoveItem = async (itemId: string) => {
   //   try {
   //     await removeItem(wixClient, itemId);
@@ -143,6 +147,8 @@ const CartModal = ({ onClose }: CartModalProps) => {
                       >
                           Remove </button>
 
+
+
                       
                       </div>
                     </div>
@@ -167,7 +173,7 @@ const CartModal = ({ onClose }: CartModalProps) => {
             >
               Close Cart
             </button>
-            <button
+            {/* <button
               className="w-full py-2 px-4 bg-black text-white rounded-md hover:bg-gray-800 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
               disabled={
                 isLoading || !cart.lineItems || cart.lineItems.length === 0
@@ -175,7 +181,16 @@ const CartModal = ({ onClose }: CartModalProps) => {
               onClick={handleCheckout}
             >
               Checkout
-            </button>
+            </button> */}
+
+<Link href="/checkout" passHref>
+          <Button className="w-full">Proceed to Checkout</Button>
+        </Link>
+
+
+
+            {showInstructions && <PaymentInstructions onClose={() => setShowInstructions(false)} />}
+
           </div>
         </div>
       </div>
