@@ -184,7 +184,7 @@ const CartModal = ({ onClose }: CartModalProps) => {
             </button> */}
 
 <Link href="/checkout" passHref>
-          <Button className="w-full">Proceed to Checkout</Button>
+          <Button className="w-full" onClick={onClose}>Proceed to Checkout</Button>
         </Link>
 
 
