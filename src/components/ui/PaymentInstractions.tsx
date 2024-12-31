@@ -24,7 +24,7 @@ export default function PaymentInstructions({ onClose }: PaymentInstructionsProp
           <p className="mb-4">Please follow these steps to complete your payment:</p>
           <ol className="list-decimal list-inside mb-4">
             <li>Copy our account details: 1234-5678-9012-3456</li>
-            <li>Go to your bank's website or app</li>
+            <li>Go to your bank&apos;s website or app</li>
             <li>Make a transfer to our account for the total amount</li>
             <li>Save the transaction receipt or take a screenshot</li>
             <li>Return to our website and upload the proof of payment</li>
