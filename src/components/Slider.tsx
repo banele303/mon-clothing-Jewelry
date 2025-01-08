@@ -2,7 +2,7 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
+
 import { useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 
@@ -71,11 +71,7 @@ export default function ModernSlider() {
               <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold text-gray-900 animate-slideUp">
                 {slide.title}
               </h1>
-              <Link href={slide.url}>
-                <button className="mt-4 md:mt-8 px-6 py-3 bg-black text-white rounded-full text-lg font-semibold transition-all duration-300 ease-in-out hover:bg-gray-800 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 animate-fadeIn">
-                  SHOP NOW
-                </button>
-              </Link>
+              
             </div>
             {/* IMAGE CONTAINER */}
             <div className="w-full md:w-1/2 h-1/2 md:h-full relative overflow-hidden px-[2rem] rounded-md">
