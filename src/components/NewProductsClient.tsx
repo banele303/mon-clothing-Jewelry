@@ -25,7 +25,7 @@ const NewProductsClient = ({
 
   return (
     <div className="min-h-screen">
-      <main className="mx-auto px-4 py-8">
+      <main className="mx-auto  py-8">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {productsData.products.map((product: products.Product) => (
             <Link href={"/" + product.slug} key={product._id} className="group">
@@ -34,53 +34,50 @@ const NewProductsClient = ({
                 onMouseEnter={() => product._id && setHoveredProduct(product._id)}
                 onMouseLeave={() => setHoveredProduct(null)}
               >
-                <Link href={`/${product.slug}`}>
-                  <CardContent className="p-0">
-                    <div className="relative h-48 w-full overflow-hidden">
-                      <Image
-                        src={product.media?.mainMedia?.image?.url || "/placeholder.svg"}
-                        alt={product.name || "Product image"}
-                        layout="fill"
-                        objectFit="cover"
-                        className="transition-transform duration-300 group-hover:scale-110"
-                      />
-                      {product._id && hoveredProduct === product._id && (
-                        <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          <Button variant="secondary" size="sm" className="mr-2">
-                            Quick View
-                          </Button>
-                          <Button size="sm">
-                            <ShoppingCart className="w-4 h-4 mr-2" />
-                            Add to Cart
-                          </Button>
-                        </div>
+                <CardContent className="p-0">
+                  <div className="relative h-48 w-full overflow-hidden">
+                    <Image
+                      src={product.media?.mainMedia?.image?.url || "/placeholder.svg"}
+                      alt={product.name || "Product image"}
+                      layout="fill"
+                      objectFit="cover"
+                      className="transition-transform duration-300 group-hover:scale-110"
+                    />
+                    {product._id && hoveredProduct === product._id && (
+                      <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <Button variant="secondary" size="sm" className="mr-2">
+                          Quick View
+                        </Button>
+                        <Button size="sm">
+                          <ShoppingCart className="w-4 h-4 mr-2" />
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-4">
+                    <h3 className="text-sm font-medium text-gray-900 truncate">{product.name}</h3>
+                    <div className="mt-1 flex items-center">
+                      <span className="text-lg font-bold text-red-600">{product.price?.price}</span>
+                      {product.price?.price && (
+                        <span className="ml-2 text-sm text-gray-500 line-through">
+                          {product.price.price * 1.2}
+                        </span>
                       )}
                     </div>
-                    <div className="p-4">
-                      <h3 className="text-sm font-medium text-gray-900 truncate">{product.name}</h3>
-                      <div className="mt-1 flex items-center">
-                        <span className="text-lg font-bold text-red-600">{product.price?.price}</span>
-                        {product.price?.price && (
-                          <span className="ml-2 text-sm text-gray-500 line-through">
-                            {product.price.price * 1.2}
-                          </span>
-                        )}
-                      </div>
-                      <div className="mt-1 flex items-center">
-                        {[...Array(5)].map((_, i) => (
-                          <Star key={i} className="w-4 h-4 text-yellow-400 fill-current" />
-                        ))}
-                        <span className="ml-1 text-sm text-gray-500">(123)</span>
-                      </div>
+                    <div className="mt-1 flex items-center">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className="w-4 h-4 text-yellow-400 fill-current" />
+                      ))}
+                      <span className="ml-1 text-sm text-gray-500">(123)</span>
                     </div>
-                  </CardContent>
-                </Link>
+                  </div>
+                </CardContent>
                 <CardFooter className="p-4 pt-0 flex justify-between items-center">
                   <Button variant="ghost" size="sm">
                     <Heart className="w-4 h-4 mr-2" />
                     Wishlist
                   </Button>
-                  <span className="text-sm text-gray-500">Free Shipping</span>
+                 
                 </CardFooter>
               </Card>
             </Link>
@@ -100,4 +97,3 @@ const NewProductsClient = ({
 };
 
 export default NewProductsClient;
-
